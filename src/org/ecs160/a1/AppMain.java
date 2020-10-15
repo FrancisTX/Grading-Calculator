@@ -2,14 +2,14 @@ package org.ecs160.a1;
 
 
 import static com.codename1.ui.CN.*;
-import com.codename1.ui.Display;
-import com.codename1.ui.Form;
-import com.codename1.ui.Dialog;
-import com.codename1.ui.Label;
+
+import com.codename1.ui.*;
+import com.codename1.ui.plaf.Style;
 import com.codename1.ui.plaf.UIManager;
+import com.codename1.ui.table.TableLayout;
 import com.codename1.ui.util.Resources;
 import com.codename1.io.Log;
-import com.codename1.ui.Toolbar;
+
 import java.io.IOException;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.io.NetworkEvent;
@@ -51,9 +51,71 @@ public class AppMain {
             current.show();
             return;
         }
-        Form hi = new Form("Hi World", BoxLayout.y());
-        hi.add(new Label("Hi World"));
+        TextField fl1 = new TextField("My Field1");
+        TextField fl2 = new TextField("My Field2");
+        TextField fl3 = new TextField("My Field3");
+        TextField fl4 = new TextField("My Field4");
+
+        Label sin = new Label("sin");
+        sin.getAllStyles().setBgColor(0xff9900);
+
+        Button cos = new Button("cos");
+        sin.getAllStyles().setBgColor(0xff9900);
+
+        Button tan = new Button("tan");
+        sin.getAllStyles().setBgColor(0xff9900);
+
+        Button Log = new Button("Log");
+        sin.getAllStyles().setBgColor(0xff9900);
+
+        Button Ln = new Button("Ln");
+        sin.getAllStyles().setBgColor(0xff9900);
+
+        //Style s = UIManager.getInstance().getComponentStyle("Button");
+        //FontImage icon1 = FontImage.createMaterial(FontImage.MATERIAL_ALARM, s);
+
+        TableLayout t = new TableLayout(5,5);
+        Form hi = new Form("Calculator", t);
+        hi.setScrollable(false);
+        hi.
+                add(t.createConstraint().widthPercentage(20).heightPercentage(10), sin).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(10), cos).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(10), tan).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(10), Log).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(10), Ln).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(10), new Button("x^2")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(10), new Button("x^3")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(10), new Button("sqrt")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(10), new Button("Pi")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(10), new Button("e")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(30), new Button("X <-> Y")).
+                //add(t.createConstraint().widthPercentage(10).heightPercentage(10), new Button("POP")).
+
+                add(t.createConstraint().widthPercentage(20).heightPercentage(25), new Button("7")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(25), new Button("8")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(25), new Button("9")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(25), new Button("/")).
+
+                add(t.createConstraint().widthPercentage(20).heightPercentage(25), new Button("CLR")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(25), new Button("4")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(25), new Button("5")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(25), new Button("6")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(25), new Button("*")).
+
+                add(t.createConstraint().widthPercentage(20).heightPercentage(25), new Button("<-")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(25), new Button("1")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(25), new Button("2")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(25), new Button("3")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(25), new Button("-")).
+
+                add(t.createConstraint().widthPercentage(20).heightPercentage(30), new Button("ENT")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(30), new Button("0")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(30), new Button(".")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(30), new Button("y^x")).
+                add(t.createConstraint().widthPercentage(20).heightPercentage(30), new Button("+"));
         hi.show();
+
+       //sin.addActionListener((e) -> Log.p("Clicked"));
     }
 
     public void stop() {
