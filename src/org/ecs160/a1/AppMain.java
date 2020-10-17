@@ -11,6 +11,8 @@ import com.codename1.ui.util.Resources;
 import com.codename1.io.Log;
 import com.codename1.ui.Toolbar;
 import java.io.IOException;
+import java.util.Vector;
+
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.io.NetworkEvent;
 
@@ -67,4 +69,160 @@ public class AppMain {
     public void destroy() {
     }
 
+}
+
+class Stack {
+    protected Vector<Double> stack;
+    private int cursize;
+
+    public Stack() {
+        stack = new Vector<Double>();
+        stack.add(0.0);
+        stack.add(0.0);
+        stack.add(0.0);
+        stack.add(0.0);
+        cursize = 0;
+    }
+
+    public double pop(){
+        double x = stack.get(stack.size()-1);
+        stack.remove(stack.size()-1);
+        if (cursize > 0) cursize--;
+        if (cursize<4) stack.add(0,0.0);
+        return x;
+    }
+
+    public void push(Double num) {
+        stack.add(num);
+        cursize++;
+        if (cursize <= 4) stack.remove(0);
+    }
+
+    //get values from last four registers and return it as a vector(X,Y,S,T)
+    public Vector<Double> getLastFourValues() {
+        Vector<Double> fourvalues = new Vector<Double>();
+        for (int i = stack.size()-1; i >= stack.size()-4; i--) {
+            fourvalues.add(stack.get(i));
+        }
+        return fourvalues;
+    }
+
+    //get values in Register X and Y, and return as a vector
+    public Vector<Double> getXY() {
+        Vector<Double> xy = new Vector<Double>();
+        Double x = stack.get(stack.size()-1);
+        pop();
+        Double y = stack.get(stack.size()-1);
+        pop();
+        xy.add(x);
+        xy.add(y);
+        return xy;
+    }
+
+    public void xyInterchange() {
+        Vector<Double> xy = getXY();
+        push(xy.get(0));
+        push(xy.get(1));
+    }
+
+    public void clear() {
+        stack.clear();
+        stack.add(0.0);
+        stack.add(0.0);
+        stack.add(0.0);
+        stack.add(0.0);
+        cursize = 0;
+    }
+
+    public void clearX() {
+        pop();
+        push(0.0);
+    }
+}
+
+class NormalModeAlgorithm extends org.ecs160.a1.Stack {
+    public void plus() {
+        Vector<Double> xy = getXY();
+        double result = xy.firstElement() + xy.lastElement();
+        push(result);
+    }
+
+    public void minus() {
+        Vector<Double> xy = getXY();
+        double result = xy.lastElement() - xy.firstElement();
+        push(result);
+    }
+
+    public void multiply() {
+        Vector<Double> xy = getXY();
+        double result = xy.lastElement() * xy.firstElement();
+        push(result);
+    }
+
+    public void devide() {
+        Vector<Double> xy = getXY();
+        double result = xy.lastElement() / xy.firstElement();
+        push(result);
+    }
+
+    public void log() {
+        double x = pop();
+        double result = Math.log10(x);
+        push(result);
+    }
+
+    public void ln() {
+        double x = pop();
+        double result = Math.log(x);
+        push(result);
+    }
+
+    public void sin() {
+        double x = pop();
+        double radians = Math.toRadians(x);
+        double result = Math.sin(radians);
+        push(result);
+    }
+
+    public void cos() {
+        double x = pop();
+        double radians = Math.toRadians(x);
+        double result = Math.cos(radians);
+        push(result);
+    }
+
+    public void tan() {
+        double x = pop();
+        double radians = Math.toRadians(x);
+        double result = Math.tan(radians);
+        push(result);
+    }
+
+    public void Pi() {
+        push(Math.PI);
+    }
+
+    public void square() {
+        double x = pop();
+        double result = Math.pow(x, 2);
+        push(result);
+    }
+
+    public void cube() {
+        double x = pop();
+        double result = Math.pow(x, 3);
+        push(result);
+    }
+
+    public void yPowerx() {
+        Vector<Double> xy = getXY();
+        double result = Math.pow(xy.get(1), xy.get(0));
+        push(result);
+    }
+
+    public void sqrt() {
+        double x = pop();
+        double result = Math.sqrt(x);
+        push(result);
+    }
 }
