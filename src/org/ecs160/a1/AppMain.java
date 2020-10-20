@@ -736,6 +736,14 @@ class CalculatorForm extends Form{
         multiply.getAllStyles().setBgColor(0xff9900);
         multiply.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+                if (!command.isEmpty() && command.charAt(0) != '*') {
+                    Double x = Double.parseDouble(command);
+                    normalal.pop();
+                    normalal.push(x);
+                }
+                command = "";
+                normalal.multiply();
+                showXYST(normalal.getLastFourValues());
             }
         });
 
