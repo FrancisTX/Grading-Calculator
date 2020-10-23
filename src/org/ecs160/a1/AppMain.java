@@ -237,7 +237,7 @@ class NormalModeAlgorithm extends Stack {
 
 class Curve extends Stack {
 
-    private Vector<Double> curvedGrades;
+    protected Vector<Double> curvedGrades;
 
     public Curve() {
         curvedGrades = new Vector<Double>();
@@ -245,8 +245,7 @@ class Curve extends Stack {
 
     public void rootCurve() {
         double a = pop();
-        for (int i = 0; i >= stack.size(); i++) {
-            double x = stack.get(i);
+        for (double x : stack) {
             x = Math.pow(100, 1-a)*Math.pow(x, a);
             curvedGrades.add(x);
         }
@@ -254,6 +253,7 @@ class Curve extends Stack {
         push(meanDiff());
         push(lowDiff());
         push(Collections.max(curvedGrades));
+        curvedGrades.clear();
     }
 
     //is this curving method even worth it?
@@ -264,8 +264,7 @@ class Curve extends Stack {
 
     public void linearCurve() {
         double a = pop();
-        for (int i = 0; i >= stack.size(); i++) {
-            double x = stack.get(i);
+        for ( double x : stack) {
             x = x+a;
             curvedGrades.add(x);
         }
@@ -273,6 +272,7 @@ class Curve extends Stack {
         push(meanDiff());
         push(lowDiff());
         push(Collections.max(curvedGrades));
+        curvedGrades.clear();
     }
 
     public double meanRaw() {
@@ -280,7 +280,7 @@ class Curve extends Stack {
         for (double i : stack) {
             sum += i;
         }
-        return sum / (stack.size() - 4);
+        return sum / (stack.size());
     }
 
     public double meanCurve() {
@@ -289,7 +289,7 @@ class Curve extends Stack {
             curvSum += i;
         }
 
-        return curvSum / ( curvedGrades.size() - 4);
+        return curvSum / ( curvedGrades.size());
     }
 
     public double meanDiff() {
