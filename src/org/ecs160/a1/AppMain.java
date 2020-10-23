@@ -81,7 +81,7 @@ public class AppMain {
 
 class Stack {
     protected static Vector<Double> stack;
-    private int cursize;
+    private static int cursize;
 
     public Stack() {
         stack = new Vector<Double>();
@@ -244,86 +244,121 @@ class Curve extends Stack {
     protected Vector<Double> curvedGrades;
 
     public Curve() {
-        curvedGrades = new Vector<Double>();
+        curvedGrades = new Vector<Double>(0);
+        //curvedGrades = (Vector<Double>) stack.clone();
     }
 
     public void rootCurve() {
         double a = pop();
-        for (double x : stack) {
+        for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
+            double x = stack.get(i);
             x = Math.pow(100, 1-a)*Math.pow(x, a);
             curvedGrades.add(x);
+            //curvedGrades.set(i, x);
         }
-        push(hiDiff());
-        push(meanDiff());
-        push(lowDiff());
-        push(Collections.max(curvedGrades));
+        double hi = hiDiff(), mean = meanDiff(), low = lowDiff();
+        push(hi);
+        push(mean);
+        push(low);
         curvedGrades.clear();
     }
 
     //is this curving method even worth it?
     public void bellCurve() {
         double ways = pop();
-
     }
 
     public void linearCurve() {
         double a = pop();
-        for (int i = 0; i < getCursize(); i++) {
+        for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
             double x = stack.get(i);
             x = x+a;
             curvedGrades.add(x);
+            //curvedGrades.set(i, x);
         }
-        push(hiDiff());
-        push(meanDiff());
-        push(lowDiff());
-        push(Collections.max(curvedGrades));
+        double hi = hiDiff(), mean = meanDiff(), low = lowDiff();
+        push(hi);
+        push(mean);
+        push(low);
         curvedGrades.clear();
-    }
-
-    public double meanRaw() {
-        double sum = 0;
-        for (double i : stack) {
-            sum += i;
-        }
-        return sum / (getCursize());
-    }
-
-    public double meanCurve() {
-        double curvSum = 0;
-        for (double i : curvedGrades) {
-            curvSum += i;
-        }
-
-        return curvSum / ( getCursize());
-    }
-
-    public double meanDiff() {
-        return meanCurve() - meanRaw();
-    }
-
-    public double hiRaw() {
-        return Collections.max(stack);
-    }
-
-    public double hiCurve() {
-        return Collections.max(curvedGrades);
     }
 
     public double hiDiff() {
         return hiCurve() - hiRaw();
     }
-
-    public double lowRaw() {
-        return Collections.min(stack);
+    public double hiCurve() {
+        double max = Double.MIN_VALUE;
+        /*for (int i = stack.size() - 1; i > Math.abs(stack.size() - getCursize()); i--) {
+            double x = curvedGrades.get(i);
+            if (x > max)
+                max = x;
+        }*/
+        for(double x: curvedGrades) {
+            if (x > max)
+                max = x;
+        }
+        return max;
+    }
+    public double hiRaw() {
+        double max = Double.MIN_VALUE;
+        for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
+            double x = stack.get(i);
+            if (x > max)
+                max = x;
+        }
+        return max;
     }
 
-    public double lowCurve() {
-        return Collections.min(curvedGrades);
+
+    public double meanDiff() {
+        return meanCurve() - meanRaw();
+    }
+    public double meanCurve() {
+        double sum = 0;
+        /*for (int i = stack.size() - 1; i > Math.abs(stack.size() - getCursize()); i--) {
+            double x = curvedGrades.get(i);
+            sum += x;
+        }*/
+        for (double x : curvedGrades) {
+            sum += x;
+        }
+        return (sum / getCursize());
+    }
+    public double meanRaw() {
+        double sum = 0;
+        for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
+            double x = stack.get(i);
+            sum += x;
+        }
+        return (sum / getCursize());
     }
 
     public double lowDiff() {
         return lowCurve() - lowRaw();
     }
+    public double lowCurve() {
+        double min = Double.MAX_VALUE;
+        /*for (int i = stack.size() - 1; i > Math.abs(stack.size() - getCursize()); i--) {
+            double x = curvedGrades.get(i);
+            if (x < min)
+                min = x;
+        }*/
+        for (double x : curvedGrades) {
+            if (x < min)
+                min = x;
+        }
+        return min;
+    }
+    public double lowRaw() {
+        double min = Double.MAX_VALUE;
+        for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
+            double x = stack.get(i);
+            if (x < min)
+                min = x;
+        }
+        return min;
+    }
+
 
 }
 
@@ -369,20 +404,20 @@ class CalculatorForm extends Form{
         display.add(input);
 
 
-        Button sin = new Button ("sin");
-        sin.getUnselectedStyle().setBgTransparency(255);
-        sin.getUnselectedStyle().setFgColor(0x000000);
-        sin.getAllStyles().setPadding(Component.TOP, 5);
-        sin.getAllStyles().setPadding(Component.BOTTOM, 5);
-        sin.getAllStyles().setPadding(Component.LEFT, 3);
-        sin.getAllStyles().setPadding(Component.RIGHT, 3);
-        sin.getAllStyles().setMargin(Component.TOP, 10);
-        sin.getAllStyles().setMargin(Component.BOTTOM, 10);
-        sin.getAllStyles().setMargin(Component.LEFT, 10);
-        sin.getAllStyles().setMargin(Component.RIGHT, 10);
-        sin.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        sin.getAllStyles().setBgColor(0xff9900);
-        sin.addActionListener(new ActionListener() {
+        Button root = new Button ("root");
+        root.getUnselectedStyle().setBgTransparency(255);
+        root.getUnselectedStyle().setFgColor(0x000000);
+        root.getAllStyles().setPadding(Component.TOP, 5);
+        root.getAllStyles().setPadding(Component.BOTTOM, 5);
+        root.getAllStyles().setPadding(Component.LEFT, 3);
+        root.getAllStyles().setPadding(Component.RIGHT, 3);
+        root.getAllStyles().setMargin(Component.TOP, 10);
+        root.getAllStyles().setMargin(Component.BOTTOM, 10);
+        root.getAllStyles().setMargin(Component.LEFT, 10);
+        root.getAllStyles().setMargin(Component.RIGHT, 10);
+        root.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
+        root.getAllStyles().setBgColor(0xff9900);
+        root.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
                     Double x = Double.parseDouble(command);
@@ -421,16 +456,16 @@ class CalculatorForm extends Form{
             }
         });
 
-        Button cos = new Button("cos");
-        cos.getUnselectedStyle().setBgTransparency(255);
-        cos.getUnselectedStyle().setFgColor(0x000000);
-        cos.getAllStyles().setMargin(Component.TOP, 10);
-        cos.getAllStyles().setMargin(Component.BOTTOM, 10);
-        cos.getAllStyles().setMargin(Component.LEFT, 10);
-        cos.getAllStyles().setMargin(Component.RIGHT, 10);
-        cos.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        cos.getAllStyles().setBgColor(0xff9900);
-        cos.addActionListener(new ActionListener() {
+        Button lin = new Button("lin");
+        lin.getUnselectedStyle().setBgTransparency(255);
+        lin.getUnselectedStyle().setFgColor(0x000000);
+        lin.getAllStyles().setMargin(Component.TOP, 10);
+        lin.getAllStyles().setMargin(Component.BOTTOM, 10);
+        lin.getAllStyles().setMargin(Component.LEFT, 10);
+        lin.getAllStyles().setMargin(Component.RIGHT, 10);
+        lin.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
+        lin.getAllStyles().setBgColor(0xff9900);
+        lin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
                     Double x = Double.parseDouble(command);
@@ -1080,8 +1115,8 @@ class CalculatorForm extends Form{
             }
         });
 
-        sci1.add(sin); sci1.add(square);
-        sci2.add(cos); sci2.add(cube);
+        sci1.add(root); sci1.add(square);
+        sci2.add(lin); sci2.add(cube);
         sci3.add(tan); sci3.add(SQRT);
         sci4.add(Log); sci4.add(Pi);
         sci5.add(Ln); sci5.add(E);
