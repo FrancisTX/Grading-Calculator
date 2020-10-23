@@ -17,6 +17,7 @@ import com.codename1.ui.util.Resources;
 import com.codename1.io.Log;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -78,7 +79,7 @@ public class AppMain {
 }
 
 class Stack {
-    protected Vector<Double> stack;
+    protected static Vector<Double> stack;
     private int cursize;
 
     public Stack() {
@@ -165,7 +166,7 @@ class NormalModeAlgorithm extends Stack {
         push(result);
     }
 
-    public void devide() {
+    public void divide() {
         Vector<Double> xy = getXY();
         double result = xy.lastElement() / xy.firstElement();
         push(result);
@@ -231,6 +232,80 @@ class NormalModeAlgorithm extends Stack {
         double result = Math.sqrt(x);
         push(result);
     }
+}
+
+class Curve extends Stack {
+    private Vector<Double> curvedGrades;
+
+    public void rootCurve() {
+        double a = pop();
+        for (int i = 0; i <= stack.size(); i++) {
+            double x = stack.get(i);
+            x = Math.pow(100, 1-a)*Math.pow(x, a);
+            curvedGrades.add(x);
+        }
+    }
+
+    //is this curving method even worth it?
+    public void bellCurve() {
+        double ways = pop();
+
+    }
+
+    public void linearCurve() {
+        double a = pop();
+        for (int i = 0; i <= stack.size(); i++) {
+            double x = stack.get(i);
+            x = x+a;
+            curvedGrades.add(x);
+        }
+    }
+
+    public double meanRaw() {
+        double sum = 0;
+        for (double i : stack) {
+            sum += i;
+        }
+        return sum / stack.size();
+    }
+
+    public double meanCurve() {
+        double curvSum = 0;
+        for (double i : curvedGrades) {
+            curvSum += i;
+        }
+
+        return curvSum / curvedGrades.size();
+    }
+
+    public double meanDiff() {
+        return meanCurve() - meanRaw();
+    }
+
+    public double hiRaw() {
+        return Collections.max(stack);
+    }
+
+    public double hiCurve() {
+        return Collections.max(curvedGrades);
+    }
+
+    public double hiDiff() {
+        return hiCurve() - hiRaw();
+    }
+
+    public double lowRaw() {
+        return Collections.min(stack);
+    }
+
+    public double lowCurve() {
+        return Collections.min(curvedGrades);
+    }
+
+    public double lowDiff() {
+        return lowCurve() - lowRaw();
+    }
+
 }
 
 class CalculatorForm extends Form{
@@ -632,7 +707,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                 }
                 command = "";
-                normalal.devide();
+                normalal.divide();
                 showXYST(normalal.getLastFourValues());
             }
         });
