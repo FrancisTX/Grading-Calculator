@@ -80,7 +80,7 @@ public class AppMain {
 
 class Stack {
     protected static Vector<Double> stack;
-    private static int cursize;
+    protected static int cursize;
 
     public Stack() {
         stack = new Vector<Double>();
@@ -250,6 +250,7 @@ class CalculatorForm extends Form{
 
     private String command = "";
     private NormalModeAlgorithm normalal = new NormalModeAlgorithm();
+    private List list = new List();
 
     public CalculatorForm() {
         setLayout(new BorderLayout());
@@ -298,6 +299,7 @@ class CalculatorForm extends Form{
                 command = "";
                 normalal.sin();
                 showXYST(normalal.getLastFourValues());
+                //list.saveList("List1");
             }
         });
 
@@ -346,6 +348,9 @@ class CalculatorForm extends Form{
                 command = "";
                 normalal.cos();
                 showXYST(normalal.getLastFourValues());
+
+                //list.loadList("List1");
+                //showXYST(normalal.getLastFourValues());
             }
         });
 
@@ -1018,11 +1023,51 @@ class CalculatorForm extends Form{
 
         add(BorderLayout.NORTH, display);
         add(BorderLayout.CENTER, keyboard);
-        this.show();
+        showForm();
+        show();
     }
 
-    public boolean checkCommand(){
-        return !command.isEmpty();
+    public void showForm() {
+        Toolbar toolbar = new Toolbar();
+        setToolbar(toolbar);
+        Toolbar.setOnTopSideMenu(false);
+        toolbar.addCommandToSideMenu ("+", null, (e) -> {
+            TextField tf = new TextField("", "File Name", 20, TextField.ANY);
+            Command ok = new Command("OK");
+            Command cancel = new Command("Cancel");
+            Command result = Dialog.show("File Name", BorderLayout.north(tf), ok, cancel);
+            if(ok == result) {
+                list.saveList(tf.getText());
+                createFileEntry(toolbar, tf.getText());
+                getContentPane().animateLayout(250);
+            }
+        });
+
+        for(String file : list.getAllList()) {
+            createFileEntry(toolbar, file);
+        }
+    }
+
+    private void createFileEntry(Toolbar toolbar,String file) {
+        Label fileField = new Label(file);
+            Button delete = new Button();
+            Button view = new Button();
+            FontImage.setMaterialIcon(delete, FontImage.MATERIAL_DELETE);
+            FontImage.setMaterialIcon(view, FontImage.MATERIAL_OPEN_IN_NEW);
+            Container content = BorderLayout.center(fileField);
+            content.add(BorderLayout.EAST, BoxLayout.encloseX( delete, view));
+            delete.addActionListener((e) -> {
+                list.deleteList(file);
+                content.setY(getWidth());
+                toolbar.removeComponent(content);
+            });
+            view.addActionListener((e) -> {
+                list.loadList(file);
+                showXYST(normalal.getLastFourValues());
+                command = "";
+                show();
+            });
+            toolbar.addComponentToLeftSideMenu(content);
     }
 
     public void showX(String x) {
@@ -1058,15 +1103,35 @@ class List extends Stack {
     public List() {
         list = new Vector<String>();
         curlistname = new String("No list loaded");
-        size = 0;
+        String alllist = Preferences.get("allList", null);
+        String listname = "";
+
+        if (alllist != null) {
+            alllist += "!";
+            for (int i = 0; i < alllist.length(); i++) {
+                if (alllist.charAt(i) != '!') {
+                    listname += alllist.charAt(i);
+                } else {
+                    list.add(listname);
+                    listname = "";
+                }
+            }
+            if (list.elementAt(0).equals("null")) {
+                list.remove(0);
+            }
+        }
+
+        size = list.size();
     }
 
     public void saveList(String listname){
         String data = stack.toString();
         data = data.substring(1,data.length()-1).replace(","," ");
         Preferences.set(listname, data);
+        Preferences.set("allList",Preferences.get("allList",null)+"!"+ listname);
         list.add(listname);
         size++;
+        curlistname = listname;
     }
 
     public void loadList(String listname){
@@ -1083,10 +1148,19 @@ class List extends Stack {
                 }
             }
         }
+        curlistname = listname;
     }
 
     public void deleteList(String listname) {
         Preferences.delete(listname);
+        list.removeElement(listname);
+        String allList = new String("");
+        for (String i:list){
+            allList += i;
+            allList += "!";
+        }
+        allList = allList.substring(0,allList.length()-1);
+        Preferences.set("allList", allList);
         size--;
     }
 
@@ -1101,8 +1175,4 @@ class List extends Stack {
     public int getSize() {
         return size;
     }
-}
-
-class CurveAlgorithm extends Stack {
-
 }
