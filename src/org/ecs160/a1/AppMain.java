@@ -4,6 +4,7 @@ package org.ecs160.a1;
 import static com.codename1.ui.CN.*;
 
 import com.codename1.charts.util.ColorUtil;
+import com.codename1.io.Preferences;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
@@ -1046,5 +1047,49 @@ class CalculatorForm extends Form{
         tRegister.add(t);
         this.show();
     }
+
+}
+
+class List extends Stack {
+    private Vector<String> list;
+    private String curlistname;
+    private int size;
+
+    public List() {
+        list = new Vector<String>();
+        curlistname = new String("No list loaded");
+        size = 0;
+    }
+
+    public void saveList(String listname){
+        String data = stack.toString();
+        data = data.substring(1,data.length()-1).replace(","," ");
+        Preferences.set(listname, data);
+        list.add(listname);
+        size++;
+    }
+
+    public void loadList(String listname){
+        String data = Preferences.get(listname,null);
+        String num = "";
+        for (int i = 0; i < data.length(); i++) {
+            char c = data.charAt(i);
+            if (c != ' ') {
+                num += c;
+            } else {
+                if (!num.isEmpty()) {
+                    push(Double.parseDouble(num));
+                    num = "";
+                }
+            }
+        }
+    }
+
+    public void deleteList(String listname) {
+
+    }
+}
+
+class CurveAlgorithm extends Stack {
 
 }
