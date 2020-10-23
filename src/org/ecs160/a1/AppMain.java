@@ -4,6 +4,7 @@ package org.ecs160.a1;
 import static com.codename1.ui.CN.*;
 
 import com.codename1.charts.util.ColorUtil;
+import com.codename1.io.Preferences;
 import com.codename1.ui.*;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
@@ -78,7 +79,7 @@ public class AppMain {
 }
 
 class Stack {
-    protected Vector<Double> stack;
+    protected static Vector<Double> stack;
     private int cursize;
 
     public Stack() {
@@ -247,7 +248,7 @@ class CalculatorForm extends Form{
     Container sci6 = new Container(new GridLayout(2,1));
     Container keyboard = new Container(new GridLayout(5,5));
 
-    private String command = "";
+    private String command = new String("");
     private NormalModeAlgorithm normalal = new NormalModeAlgorithm();
 
     public CalculatorForm() {
@@ -881,6 +882,9 @@ class CalculatorForm extends Form{
                     if (command.contains("E")) {
                         x = Double.parseDouble(command.substring(0,command.indexOf('E')));
                         x *= Math.pow(10,Double.parseDouble(command.substring(command.indexOf('E')+1)));
+                    } else if (command.charAt(0)=='*'){
+                        x = normalal.pop();
+                        normalal.push(x);
                     } else {
                         x = Double.parseDouble(command);
                     }
@@ -1018,10 +1022,6 @@ class CalculatorForm extends Form{
         add(BorderLayout.NORTH, display);
         add(BorderLayout.CENTER, keyboard);
         this.show();
-    }
-
-    public boolean checkCommand(){
-        return !command.isEmpty();
     }
 
     public void showX(String x) {
