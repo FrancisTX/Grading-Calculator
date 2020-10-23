@@ -236,15 +236,24 @@ class NormalModeAlgorithm extends Stack {
 }
 
 class Curve extends Stack {
+
     private Vector<Double> curvedGrades;
+
+    public Curve() {
+        curvedGrades = new Vector<Double>();
+    }
 
     public void rootCurve() {
         double a = pop();
-        for (int i = 0; i <= stack.size(); i++) {
+        for (int i = 0; i >= stack.size(); i++) {
             double x = stack.get(i);
             x = Math.pow(100, 1-a)*Math.pow(x, a);
             curvedGrades.add(x);
         }
+        push(hiDiff());
+        push(meanDiff());
+        push(lowDiff());
+        push(Collections.max(curvedGrades));
     }
 
     //is this curving method even worth it?
@@ -255,11 +264,15 @@ class Curve extends Stack {
 
     public void linearCurve() {
         double a = pop();
-        for (int i = 0; i <= stack.size(); i++) {
+        for (int i = 0; i >= stack.size(); i++) {
             double x = stack.get(i);
             x = x+a;
             curvedGrades.add(x);
         }
+        push(hiDiff());
+        push(meanDiff());
+        push(lowDiff());
+        push(Collections.max(curvedGrades));
     }
 
     public double meanRaw() {
@@ -267,7 +280,7 @@ class Curve extends Stack {
         for (double i : stack) {
             sum += i;
         }
-        return sum / stack.size();
+        return sum / (stack.size() - 4);
     }
 
     public double meanCurve() {
@@ -276,7 +289,7 @@ class Curve extends Stack {
             curvSum += i;
         }
 
-        return curvSum / curvedGrades.size();
+        return curvSum / ( curvedGrades.size() - 4);
     }
 
     public double meanDiff() {
@@ -325,6 +338,7 @@ class CalculatorForm extends Form{
 
     private String command = new String("");
     private NormalModeAlgorithm normalal = new NormalModeAlgorithm();
+    private Curve normalcurve = new Curve();
 
     public CalculatorForm() {
         setLayout(new BorderLayout());
@@ -371,7 +385,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                 }
                 command = "";
-                normalal.sin();
+                normalcurve.rootCurve();
                 showXYST(normalal.getLastFourValues());
             }
         });
@@ -419,7 +433,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                 }
                 command = "";
-                normalal.cos();
+                normalcurve.linearCurve();
                 showXYST(normalal.getLastFourValues());
             }
         });
