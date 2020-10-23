@@ -146,6 +146,10 @@ class Stack {
         pop();
         push(0.0);
     }
+
+    public int getCursize() {
+        return cursize;
+    }
 }
 
 class NormalModeAlgorithm extends Stack {
@@ -264,7 +268,8 @@ class Curve extends Stack {
 
     public void linearCurve() {
         double a = pop();
-        for ( double x : stack) {
+        for (int i = 0; i < getCursize(); i++) {
+            double x = stack.get(i);
             x = x+a;
             curvedGrades.add(x);
         }
@@ -280,7 +285,7 @@ class Curve extends Stack {
         for (double i : stack) {
             sum += i;
         }
-        return sum / (stack.size());
+        return sum / (getCursize());
     }
 
     public double meanCurve() {
@@ -289,7 +294,7 @@ class Curve extends Stack {
             curvSum += i;
         }
 
-        return curvSum / ( curvedGrades.size());
+        return curvSum / ( getCursize());
     }
 
     public double meanDiff() {
