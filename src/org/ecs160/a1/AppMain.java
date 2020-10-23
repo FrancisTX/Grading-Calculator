@@ -80,7 +80,7 @@ public class AppMain {
 
 class Stack {
     protected static Vector<Double> stack;
-    protected static int cursize;
+    private int cursize;
 
     public Stack() {
         stack = new Vector<Double>();
@@ -248,7 +248,7 @@ class CalculatorForm extends Form{
     Container sci6 = new Container(new GridLayout(2,1));
     Container keyboard = new Container(new GridLayout(5,5));
 
-    private String command = "";
+    private String command = new String("");
     private NormalModeAlgorithm normalal = new NormalModeAlgorithm();
     private List list = new List();
 
@@ -887,6 +887,9 @@ class CalculatorForm extends Form{
                     if (command.contains("E")) {
                         x = Double.parseDouble(command.substring(0,command.indexOf('E')));
                         x *= Math.pow(10,Double.parseDouble(command.substring(command.indexOf('E')+1)));
+                    } else if (command.charAt(0)=='*'){
+                        x = normalal.pop();
+                        normalal.push(x);
                     } else {
                         x = Double.parseDouble(command);
                     }
