@@ -79,8 +79,8 @@ public class AppMain {
 }
 
 class Stack {
-    protected Vector<Double> stack;
-    private int cursize;
+    protected static Vector<Double> stack;
+    private static int cursize;
 
     public Stack() {
         stack = new Vector<Double>();
@@ -1086,7 +1086,20 @@ class List extends Stack {
     }
 
     public void deleteList(String listname) {
+        Preferences.delete(listname);
+        size--;
+    }
 
+    public Vector<String> getAllList() {
+        return (Vector)list.clone();
+    }
+
+    public String getCurList() {
+        return curlistname;
+    }
+
+    public int getSize() {
+        return size;
     }
 }
 
