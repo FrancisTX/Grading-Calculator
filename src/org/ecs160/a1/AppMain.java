@@ -89,7 +89,7 @@ class Stack {
         stack.add(0.0);
         stack.add(0.0);
         stack.add(0.0);
-        cursize = 0;
+        cursize = -1;
     }
 
     public double pop(){
@@ -139,7 +139,7 @@ class Stack {
         stack.add(0.0);
         stack.add(0.0);
         stack.add(0.0);
-        cursize = 0;
+        cursize = -1;
     }
 
     public void clearX() {
@@ -240,21 +240,26 @@ class NormalModeAlgorithm extends Stack {
 }
 
 class Curve extends Stack {
-
+    /*
+    * Offers three curving methods: root curve, bell curve, and linear curve. This presently doesn't work right if you
+    * want the average of only a single grade.
+    */
     protected Vector<Double> curvedGrades;
 
     public Curve() {
         curvedGrades = new Vector<Double>(0);
-        //curvedGrades = (Vector<Double>) stack.clone();
     }
 
+    /*
+     * rootCurve() computes the root curve based off some values 0 < a < 1, then pushes the difference of the highest
+     * grade, the mean grade, and the lowest grade onto the stack.
+     */
     public void rootCurve() {
         double a = pop();
         for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
             double x = stack.get(i);
             x = Math.pow(100, 1-a)*Math.pow(x, a);
             curvedGrades.add(x);
-            //curvedGrades.set(i, x);
         }
         double hi = hiDiff(), mean = meanDiff(), low = lowDiff();
         push(hi);
@@ -263,20 +268,33 @@ class Curve extends Stack {
         curvedGrades.clear();
     }
 
-    //is this curving method even worth it?
+    /*
+    * Given some data points, computes the mean and SD, and pushes that onto the stack.
+    */
     public void bellCurve() {
-        double ways = pop();
+        double mean = meanRaw();
+        double sd = 0;
+        for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
+            double x = stack.get(i);
+            sd += Math.pow(Math.abs(mean - x), 2);
+        }
+        sd = Math.sqrt(sd/getCursize());
+        push(mean);
+        push(sd);
+        curvedGrades.clear();
     }
-
+    /*
+    * Shifts the entire class by a given amount. Pushes the new lowest grade, new mean grade, and new highest onto the
+    * stack.
+    */
     public void linearCurve() {
         double a = pop();
         for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
             double x = stack.get(i);
             x = x+a;
             curvedGrades.add(x);
-            //curvedGrades.set(i, x);
         }
-        double hi = hiDiff(), mean = meanDiff(), low = lowDiff();
+        double hi = hiCurve(), mean = meanCurve(), low = lowCurve();
         push(hi);
         push(mean);
         push(low);
@@ -288,11 +306,6 @@ class Curve extends Stack {
     }
     public double hiCurve() {
         double max = Double.MIN_VALUE;
-        /*for (int i = stack.size() - 1; i > Math.abs(stack.size() - getCursize()); i--) {
-            double x = curvedGrades.get(i);
-            if (x > max)
-                max = x;
-        }*/
         for(double x: curvedGrades) {
             if (x > max)
                 max = x;
@@ -315,10 +328,6 @@ class Curve extends Stack {
     }
     public double meanCurve() {
         double sum = 0;
-        /*for (int i = stack.size() - 1; i > Math.abs(stack.size() - getCursize()); i--) {
-            double x = curvedGrades.get(i);
-            sum += x;
-        }*/
         for (double x : curvedGrades) {
             sum += x;
         }
@@ -338,11 +347,6 @@ class Curve extends Stack {
     }
     public double lowCurve() {
         double min = Double.MAX_VALUE;
-        /*for (int i = stack.size() - 1; i > Math.abs(stack.size() - getCursize()); i--) {
-            double x = curvedGrades.get(i);
-            if (x < min)
-                min = x;
-        }*/
         for (double x : curvedGrades) {
             if (x < min)
                 min = x;
@@ -358,8 +362,6 @@ class Curve extends Stack {
         }
         return min;
     }
-
-
 }
 
 class CalculatorForm extends Form{
@@ -378,7 +380,7 @@ class CalculatorForm extends Form{
 
     private String command = new String("");
     private NormalModeAlgorithm normalal = new NormalModeAlgorithm();
-    private Curve normalcurve = new Curve();
+    private Curve curveal = new Curve();
 
     public CalculatorForm() {
         setLayout(new BorderLayout());
@@ -425,7 +427,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                 }
                 command = "";
-                normalcurve.rootCurve();
+                curveal.rootCurve();
                 showXYST(normalal.getLastFourValues());
             }
         });
@@ -473,7 +475,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                 }
                 command = "";
-                normalcurve.linearCurve();
+                curveal.linearCurve();
                 showXYST(normalal.getLastFourValues());
             }
         });
@@ -501,16 +503,16 @@ class CalculatorForm extends Form{
             }
         });
 
-        Button tan = new Button("tan");
-        tan.getUnselectedStyle().setBgTransparency(255);
-        tan.getUnselectedStyle().setFgColor(0x000000);
-        tan.getAllStyles().setMargin(Component.TOP, 10);
-        tan.getAllStyles().setMargin(Component.BOTTOM, 10);
-        tan.getAllStyles().setMargin(Component.LEFT, 10);
-        tan.getAllStyles().setMargin(Component.RIGHT, 10);
-        tan.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        tan.getAllStyles().setBgColor(0xff9900);
-        tan.addActionListener(new ActionListener() {
+        Button bell = new Button("bell");
+        bell.getUnselectedStyle().setBgTransparency(255);
+        bell.getUnselectedStyle().setFgColor(0x000000);
+        bell.getAllStyles().setMargin(Component.TOP, 10);
+        bell.getAllStyles().setMargin(Component.BOTTOM, 10);
+        bell.getAllStyles().setMargin(Component.LEFT, 10);
+        bell.getAllStyles().setMargin(Component.RIGHT, 10);
+        bell.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
+        bell.getAllStyles().setBgColor(0xff9900);
+        bell.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
                     Double x = Double.parseDouble(command);
@@ -518,7 +520,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                 }
                 command = "";
-                normalal.tan();
+                curveal.bellCurve();
                 showXYST(normalal.getLastFourValues());
             }
         });
@@ -1117,7 +1119,7 @@ class CalculatorForm extends Form{
 
         sci1.add(root); sci1.add(square);
         sci2.add(lin); sci2.add(cube);
-        sci3.add(tan); sci3.add(SQRT);
+        sci3.add(bell); sci3.add(SQRT);
         sci4.add(Log); sci4.add(Pi);
         sci5.add(Ln); sci5.add(E);
         sci6.add(X_Y); sci6.add(POP);
