@@ -1309,9 +1309,5 @@ class List extends Stack {
     public int getSize() {
         return size;
     }
-<<<<<<< HEAD
->>>>>>> 09957585534148e9b87c9ef1910437e16b9e6742
 }
-=======
-}
->>>>>>> 09957585534148e9b87c9ef1910437e16b9e6742
+
