@@ -62,8 +62,6 @@ public class AppMain {
             current.show();
             return;
         }
-        //Preferences.clearAll();
-        //List list = new List();
         CalculatorForm calculatorDis = new CalculatorForm();
     }
 
