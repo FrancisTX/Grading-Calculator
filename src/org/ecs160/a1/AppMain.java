@@ -62,7 +62,6 @@ public class AppMain {
             current.show();
             return;
         }
-
         CalculatorForm calculatorDis = new CalculatorForm();
     }
 
@@ -89,7 +88,7 @@ class Stack {
         stack.add(0.0);
         stack.add(0.0);
         stack.add(0.0);
-        cursize = -1;
+        cursize = 0;
     }
 
     public double pop(){
@@ -153,7 +152,7 @@ class Stack {
 }
 
 class NormalModeAlgorithm extends Stack {
-    public void plus(){
+        public void plus(){
         Vector<Double> xy = getXY();
         double result = xy.firstElement() + xy.lastElement();
         push(result);
@@ -387,7 +386,7 @@ class CalculatorForm extends Form{
         setLayout(new BorderLayout());
         setTitle("RPN Calculator V0.01");
 
-        TextComponent t = new TextComponent().label("T:");
+        TextField t = new TextField("T:");
         tRegister.add(t);
         display.add(tRegister);
 
@@ -403,7 +402,7 @@ class CalculatorForm extends Form{
         xRegister.add(x);
         display.add(xRegister);
 
-        TextField input = new TextField();
+        TextComponent input = new TextComponent( ).label("");
         display.add(input);
 
 
@@ -786,6 +785,7 @@ class CalculatorForm extends Form{
         clr.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 normalal.clear();
+                command = "";
                 showXYST(normalal.getLastFourValues());
             }
         });
@@ -1157,58 +1157,67 @@ class CalculatorForm extends Form{
 
         add(BorderLayout.NORTH, display);
         add(BorderLayout.CENTER, keyboard);
-        showForm();
+
+        iniToolbar();
+
         show();
+        showXYST(normalal.getLastFourValues());
     }
 
-    public void showForm() {
-        Toolbar toolbar = new Toolbar();
-        setToolbar(toolbar);
-        Toolbar.setOnTopSideMenu(false);
-        toolbar.addCommandToSideMenu ("+", null, (e) -> {
-            TextField tf = new TextField("", "File Name", 20, TextField.ANY);
-            Command ok = new Command("OK");
-            Command cancel = new Command("Cancel");
-            Command result = Dialog.show("File Name", BorderLayout.north(tf), ok, cancel);
-            if(ok == result) {
-                list.saveList(tf.getText());
-                createFileEntry(toolbar, tf.getText());
-                getContentPane().animateLayout(250);
+    public void iniToolbar() {
+        getToolbar().addCommandToSideMenu ("  +", null, (e) -> {
+            String num;
+            if (!command.isEmpty() && command.charAt(0) != '*') {
+                Double x = Double.parseDouble(command);
+                normalal.pop();
+                normalal.push(x);
             }
+            command = "";
+            if (list.getAllList().isEmpty()) {
+                num = "1";
+            } else {
+                num = list.getAllList().lastElement().substring(4);
+                num = Integer.toString(Integer.parseInt(num) + 1);
+            }
+            list.saveList("List"+num);
+            createFileEntry(list.getCurList());
         });
 
         for(String file : list.getAllList()) {
-            createFileEntry(toolbar, file);
+            if (!file.isEmpty()) {
+                createFileEntry(file);
+            }
         }
     }
 
-    private void createFileEntry(Toolbar toolbar,String file) {
+    private void createFileEntry(String file) {
         Label fileField = new Label(file);
-            Button delete = new Button();
-            Button view = new Button();
-            FontImage.setMaterialIcon(delete, FontImage.MATERIAL_DELETE);
-            FontImage.setMaterialIcon(view, FontImage.MATERIAL_OPEN_IN_NEW);
-            Container content = BorderLayout.center(fileField);
-            content.add(BorderLayout.EAST, BoxLayout.encloseX( delete, view));
-            delete.addActionListener((e) -> {
-                list.deleteList(file);
-                content.setY(getWidth());
-                toolbar.removeComponent(content);
-            });
-            view.addActionListener((e) -> {
-                list.loadList(file);
-                showXYST(normalal.getLastFourValues());
-                command = "";
-                show();
-            });
-            toolbar.addComponentToLeftSideMenu(content);
+        Button delete = new Button();
+        Button view = new Button();
+        FontImage.setMaterialIcon(delete, FontImage.MATERIAL_DELETE);
+        FontImage.setMaterialIcon(view, FontImage.MATERIAL_OPEN_IN_NEW);
+        Container content = BorderLayout.center(fileField);
+        content.add(BorderLayout.EAST, BoxLayout.encloseX( delete, view));
+        delete.addActionListener((e) -> {
+            list.deleteList(file);
+            content.removeAll();
+            getToolbar().closeLeftSideMenu();
+        });
+        view.addActionListener((e) -> {
+            normalal.clear();
+            list.loadList(file);
+            getToolbar().closeLeftSideMenu();
+            showXYST(normalal.getLastFourValues());
+            command = "";
+        });
+        getToolbar().addComponentToLeftSideMenu(content);
     }
 
     public void showX(String x) {
         TextComponent tex = new TextComponent().label("X:" + x + "_");
         xRegister.removeAll();
         xRegister.add(tex);
-        this.show();
+        show();
     }
 
     public void showXYST(Vector<Double> xyst) {
@@ -1224,7 +1233,7 @@ class CalculatorForm extends Form{
         yRegister.add(y);
         sRegister.add(s);
         tRegister.add(t);
-        this.show();
+        show();
     }
 
 }
@@ -1240,7 +1249,7 @@ class List extends Stack {
         String alllist = Preferences.get("allList", null);
         String listname = "";
 
-        if (alllist != null) {
+        if (!alllist.isEmpty()) {
             alllist += "!";
             for (int i = 0; i < alllist.length(); i++) {
                 if (alllist.charAt(i) != '!') {
@@ -1270,6 +1279,7 @@ class List extends Stack {
 
     public void loadList(String listname){
         String data = Preferences.get(listname,null);
+        data += " ";
         String num = "";
         for (int i = 0; i < data.length(); i++) {
             char c = data.charAt(i);
@@ -1293,7 +1303,9 @@ class List extends Stack {
             allList += i;
             allList += "!";
         }
-        allList = allList.substring(0,allList.length()-1);
+        if (!allList.isEmpty()) {
+            allList = allList.substring(0, allList.length() - 1);
+        }
         Preferences.set("allList", allList);
         size--;
     }
