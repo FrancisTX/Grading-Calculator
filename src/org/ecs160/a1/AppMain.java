@@ -1259,7 +1259,7 @@ class List extends Stack {
                     listname = "";
                 }
             }
-            if (list.elementAt(0).equals("null")) {
+            if (list.elementAt(0).equals("")) {
                 list.remove(0);
             }
         }
