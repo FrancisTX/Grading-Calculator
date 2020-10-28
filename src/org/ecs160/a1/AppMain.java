@@ -138,12 +138,19 @@ class Stack {
         stack.add(0.0);
         stack.add(0.0);
         stack.add(0.0);
-        cursize = -1;
+        cursize = 0;
     }
 
     public void clearX() {
         pop();
         push(0.0);
+    }
+
+    public void roll() {
+        Double num = stack.lastElement();
+        stack.add(0,num);
+        cursize = stack.size();
+        pop();
     }
 
     public int getCursize() {
@@ -376,8 +383,9 @@ class CalculatorForm extends Form{
     Container sci5 = new Container(new GridLayout(2,1));
     Container sci6 = new Container(new GridLayout(2,1));
     Container keyboard = new Container(new GridLayout(5,5));
+    Container textbar = new Container(new BoxLayout(BoxLayout.X_AXIS));
 
-    private String command = new String("");
+    private String command = new String("*");
     private NormalModeAlgorithm normalal = new NormalModeAlgorithm();
     private List list = new List();
     private Curve curveal = new Curve();
@@ -403,7 +411,8 @@ class CalculatorForm extends Form{
         display.add(xRegister);
 
         TextComponent input = new TextComponent( ).label("");
-        display.add(input);
+        textbar.add(input);
+        display.add(textbar);
 
 
         Button root = new Button ("root");
@@ -501,7 +510,8 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                 }
                 command = "";
-                normalal.cube();
+                //normalal.cube();
+                normalal.roll();
                 showXYST(normalal.getLastFourValues());
 
             }
@@ -785,7 +795,7 @@ class CalculatorForm extends Form{
         clr.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 normalal.clear();
-                command = "";
+                command = "*";
                 showXYST(normalal.getLastFourValues());
             }
         });
@@ -1233,6 +1243,10 @@ class CalculatorForm extends Form{
         yRegister.add(y);
         sRegister.add(s);
         tRegister.add(t);
+
+        TextComponent q = new TextComponent().label("Stack Size:" + normalal.getCursize());
+        textbar.removeAll();
+        textbar.add(q);
         show();
     }
 
