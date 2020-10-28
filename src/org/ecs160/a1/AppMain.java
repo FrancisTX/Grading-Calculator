@@ -18,6 +18,7 @@ import com.codename1.ui.util.Resources;
 import com.codename1.io.Log;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Vector;
@@ -382,6 +383,7 @@ class CalculatorForm extends Form{
     Container sci4 = new Container(new GridLayout(2,1));
     Container sci5 = new Container(new GridLayout(2,1));
     Container sci6 = new Container(new GridLayout(2,1));
+    Container sci7 = new Container(new GridLayout(2,1));
     Container keyboard = new Container(new GridLayout(5,5));
     Container textbar = new Container(new BoxLayout(BoxLayout.X_AXIS));
 
@@ -389,6 +391,7 @@ class CalculatorForm extends Form{
     private NormalModeAlgorithm normalal = new NormalModeAlgorithm();
     private List list = new List();
     private Curve curveal = new Curve();
+    private int decPlaces = 3;
 
     public CalculatorForm() {
         setLayout(new BorderLayout());
@@ -510,10 +513,8 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                 }
                 command = "";
-                //normalal.cube();
-                normalal.roll();
+                normalal.cube();
                 showXYST(normalal.getLastFourValues());
-
             }
         });
 
@@ -556,7 +557,8 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                 }
                 command = "";
-                normalal.sqrt();
+                //normalal.sqrt();
+                fix();
                 showXYST(normalal.getLastFourValues());
             }
         });
@@ -583,26 +585,24 @@ class CalculatorForm extends Form{
             }
         });
 
-        Button Pi = new Button ("Pi");
-        Pi.getUnselectedStyle().setBgTransparency(255);
-        Pi.getUnselectedStyle().setFgColor(0x000000);
-        Pi.getAllStyles().setMargin(Component.TOP, 10);
-        Pi.getAllStyles().setMargin(Component.BOTTOM, 10);
-        Pi.getAllStyles().setMargin(Component.LEFT, 10);
-        Pi.getAllStyles().setMargin(Component.RIGHT, 10);
-        Pi.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        Pi.getAllStyles().setBgColor(0xff9900);
-        Pi.addActionListener(new ActionListener() {
+        Button Fix = new Button ("Fix");
+        Fix.getUnselectedStyle().setBgTransparency(255);
+        Fix.getUnselectedStyle().setFgColor(0x000000);
+        Fix.getAllStyles().setMargin(Component.TOP, 10);
+        Fix.getAllStyles().setMargin(Component.BOTTOM, 10);
+        Fix.getAllStyles().setMargin(Component.LEFT, 10);
+        Fix.getAllStyles().setMargin(Component.RIGHT, 10);
+        Fix.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
+        Fix.getAllStyles().setBgColor(0xff9900);
+        Fix.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
                     Double x = Double.parseDouble(command);
                     normalal.pop();
                     normalal.push(x);
-                } else {
-                    normalal.pop();
                 }
                 command = "";
-                normalal.Pi();
+                fix();
                 showXYST(normalal.getLastFourValues());
             }
         });
@@ -663,6 +663,28 @@ class CalculatorForm extends Form{
                 }
                 command = "";
                 normalal.xyInterchange();
+                showXYST(normalal.getLastFourValues());
+            }
+        });
+
+        Button Roll = new Button("Roll");
+        Roll.getUnselectedStyle().setBgTransparency(255);
+        Roll.getUnselectedStyle().setFgColor(0x000000);
+        Roll.getAllStyles().setMargin(Component.TOP, 10);
+        Roll.getAllStyles().setMargin(Component.BOTTOM, 10);
+        Roll.getAllStyles().setMargin(Component.LEFT, 10);
+        Roll.getAllStyles().setMargin(Component.RIGHT, 10);
+        Roll.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
+        Roll.getAllStyles().setBgColor(0xff9900);
+        Roll.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                if (!command.isEmpty() && command.charAt(0) != '*') {
+                    Double x = Double.parseDouble(command);
+                    normalal.pop();
+                    normalal.push(x);
+                }
+                command = "";
+                normalal.roll();
                 showXYST(normalal.getLastFourValues());
             }
         });
@@ -1135,9 +1157,10 @@ class CalculatorForm extends Form{
         sci1.add(root); sci1.add(square);
         sci2.add(lin); sci2.add(cube);
         sci3.add(bell); sci3.add(SQRT);
-        sci4.add(Log); sci4.add(Pi);
+        sci4.add(Log); sci4.add(Fix);
         sci5.add(Ln); sci5.add(E);
         sci6.add(X_Y); sci6.add(POP);
+        sci7.add(Roll);sci7.add(clr);
 
         keyboard.add(sci1);
         keyboard.add(sci2);
@@ -1149,7 +1172,7 @@ class CalculatorForm extends Form{
         keyboard.add(num_8);
         keyboard.add(num_9);
         keyboard.add(divide);
-        keyboard.add(clr);
+        keyboard.add(sci7);
         keyboard.add(num_4);
         keyboard.add(num_5);
         keyboard.add(num_6);
@@ -1174,7 +1197,7 @@ class CalculatorForm extends Form{
         showXYST(normalal.getLastFourValues());
     }
 
-    public void iniToolbar() {
+    private void iniToolbar() {
         getToolbar().addCommandToSideMenu ("  +", null, (e) -> {
             String num;
             if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -1223,18 +1246,28 @@ class CalculatorForm extends Form{
         getToolbar().addComponentToLeftSideMenu(content);
     }
 
-    public void showX(String x) {
+    private void showX(String x) {
         TextComponent tex = new TextComponent().label("X:" + x + "_");
         xRegister.removeAll();
         xRegister.add(tex);
         show();
     }
 
-    public void showXYST(Vector<Double> xyst) {
-        TextComponent x = new TextComponent().label("X:" + xyst.get(0).toString());
-        TextComponent y = new TextComponent().label("Y:" + xyst.get(1).toString());
-        TextComponent s = new TextComponent().label("S:" + xyst.get(2).toString());
-        TextComponent t = new TextComponent().label("T:" + xyst.get(3).toString());
+    private void showXYST(Vector<Double> xyst) {
+        DecimalFormat df;
+
+        if (decPlaces == 0) {
+            df = new DecimalFormat("#0");
+        } else if (decPlaces == 2) {
+            df = new DecimalFormat("#0.00");
+        } else {
+            df = new DecimalFormat("#0.000");
+        }
+
+        TextComponent x = new TextComponent().label("X:" + df.format(xyst.get(0)));
+        TextComponent y = new TextComponent().label("Y:" + df.format(xyst.get(1)));
+        TextComponent s = new TextComponent().label("S:" + df.format(xyst.get(2)));
+        TextComponent t = new TextComponent().label("T:" + df.format(xyst.get(3)));
         xRegister.removeAll();
         yRegister.removeAll();
         sRegister.removeAll();
@@ -1248,6 +1281,16 @@ class CalculatorForm extends Form{
         textbar.removeAll();
         textbar.add(q);
         show();
+    }
+
+    private void fix() {
+        if (decPlaces == 0) {
+            decPlaces = 2;
+        } else if (decPlaces == 2) {
+            decPlaces = 3;
+        } else {
+            decPlaces = 0;
+        }
     }
 
 }
