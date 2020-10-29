@@ -557,8 +557,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                 }
                 command = "";
-                //normalal.sqrt();
-                fix();
+                normalal.sqrt();
                 showXYST(normalal.getLastFourValues());
             }
         });
@@ -603,6 +602,7 @@ class CalculatorForm extends Form{
                 }
                 command = "";
                 fix();
+                if (normalal.getCursize() == 0) command = "*";
                 showXYST(normalal.getLastFourValues());
             }
         });
