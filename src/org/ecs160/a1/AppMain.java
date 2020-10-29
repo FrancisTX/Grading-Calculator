@@ -249,7 +249,8 @@ class NormalModeAlgorithm extends Stack {
 class Curve extends Stack {
     /*
     * Offers three curving methods: root curve, bell curve, and linear curve. This presently doesn't work right if you
-    * want the average of only a single grade.
+    * want the average of only a single grade. Also computes 5 essential statistics: high, low, mean, median, and mode.
+    * Also has helper functions to compute the difference of those 5 statistics.
     */
     protected Vector<Double> curvedGrades;
 
@@ -268,10 +269,12 @@ class Curve extends Stack {
             x = Math.pow(100, 1-a)*Math.pow(x, a);
             curvedGrades.add(x);
         }
-        double hi = hiDiff(), mean = meanDiff(), low = lowDiff();
+        double hi = hiDiff(), mean = meanDiff(), low = lowDiff(), median = medianDiff(), mode = modeDiff();
         push(hi);
         push(mean);
         push(low);
+        push(median);
+        push(mode);
         curvedGrades.clear();
     }
 
@@ -280,6 +283,8 @@ class Curve extends Stack {
     */
     public void bellCurve() {
         double mean = meanRaw();
+        double mode = modeRaw();
+        double median = medianRaw();
         double sd = 0;
         for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
             double x = stack.get(i);
@@ -287,9 +292,12 @@ class Curve extends Stack {
         }
         sd = Math.sqrt(sd/getCursize());
         push(mean);
+        push(mode);
+        push(median);
         push(sd);
         curvedGrades.clear();
     }
+
     /*
     * Shifts the entire class by a given amount. Pushes the new lowest grade, new mean grade, and new highest onto the
     * stack.
@@ -301,13 +309,18 @@ class Curve extends Stack {
             x = x+a;
             curvedGrades.add(x);
         }
-        double hi = hiCurve(), mean = meanCurve(), low = lowCurve();
+        double hi = hiDiff(), mean = meanDiff(), low = lowDiff(), median = medianDiff(), mode = modeDiff();
         push(hi);
         push(mean);
         push(low);
+        push(median);
+        push(mode);
         curvedGrades.clear();
     }
 
+    /*
+     * Finds the highest grades of the raw and curved scores, and returns the absolute difference.
+     */
     public double hiDiff() {
         return hiCurve() - hiRaw();
     }
@@ -329,7 +342,10 @@ class Curve extends Stack {
         return max;
     }
 
-
+    /*
+     * Computes the mean/average grade of the raw and curved scores, and returns the absolute difference.
+     * Note: the mean doesn't actually represent any single student, but instead is a class average.
+     */
     public double meanDiff() {
         return meanCurve() - meanRaw();
     }
@@ -349,6 +365,9 @@ class Curve extends Stack {
         return (sum / getCursize());
     }
 
+    /*
+     * Finds the lowest grades of the raw and curved scores, and returns the absolute difference.
+     */
     public double lowDiff() {
         return lowCurve() - lowRaw();
     }
@@ -368,6 +387,90 @@ class Curve extends Stack {
                 min = x;
         }
         return min;
+    }
+
+    /*
+     * Finds the median grades of the raw and curved scores, and returns the absolute difference.
+     * Note: the median represents the "middle" student, and may not represent the class average.
+     */
+    public double medianDiff(){
+        return Math.abs(medianCurve() - medianRaw());
+    }
+    public double medianCurve(){
+        Vector<Double> sortedGrades = new Vector<>(curvedGrades);
+        Collections.sort(sortedGrades);
+        int n = getCursize();
+        int mid = n/2;
+        if ((double)(n % 2) == 0.0){
+            return (sortedGrades.get(mid) + sortedGrades.get(mid+1)) / 2.0;
+        } else {
+            return (sortedGrades.get(mid));
+        }// n is odd
+    }
+    public double medianRaw(){
+        Vector<Double> sortedGrades = new Vector<>(stack);
+        Collections.sort(sortedGrades);
+        int n = getCursize();
+        int mid = n/2;
+        if ((double)(n % 2) == 0.0){
+            return (sortedGrades.get(mid) + sortedGrades.get(mid+1)) / 2.0;
+        } else {
+            return (sortedGrades.get(mid));
+        }// n is odd
+    }
+
+    /*
+     * Find the most occurring grade of the raw and curved scores, and returns the absolute difference.
+     * Note: the mode may not exist. In this case, we return a "-1".```
+     */
+    public double modeDiff(){
+        return Math.abs(modeCurve() - modeRaw());
+    }
+    public double modeCurve(){
+        double mode = 0;
+        int count = 0;
+        for (double x: curvedGrades) {
+            int countTmp = 0;
+            for (double y: curvedGrades) {
+                if (x == y) {
+                    countTmp++;
+                }
+            }
+            if (countTmp > count) {
+                count = countTmp;
+                mode = x;
+            }
+        }
+        if (count > 1) {
+            return mode;
+        } else {
+            return -1;
+        } // if count is 1 (or less somehow), then there are no repetitions
+          //  and therefore no mode
+    }
+    public double modeRaw(){
+        double mode = 0;
+        int count = 0;
+        for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
+            double x = stack.get(i);
+            int countTmp = 0;
+            for (int j = stack.size() - 1; j >= Math.abs(stack.size() - getCursize()); j--) {
+                double y = stack.get(j);
+                if (x == y) {
+                    countTmp++;
+                }
+            }
+            if (countTmp > count) {
+                count = countTmp;
+                mode = x;
+            }
+        }
+        if (count > 1) {
+            return mode;
+        } else {
+            return -1;
+        } // if count is 1 (or less somehow), then there are no repetitions
+        //  and therefore no mode
     }
 }
 
