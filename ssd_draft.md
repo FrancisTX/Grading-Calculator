@@ -68,7 +68,7 @@ List Storage: upper left coner button, user could choose any history list.
 
 * Curving operation: `root` is root curving. `lin` is linear curving. `bell` is bell curving.
 * Arithmetic operation: 
-    logarithm: `+`, `-`, `*`, `\` , `.`, `Log` and `Ln`(natural logrithm)
+    logarithm: `+`, `-`, `*`, `\` , `.`, `Log` and `Ln`(natural logrithm) <\n>
     square: `x^2`
     cube:`x^3`
     square root: `SQRT`
