@@ -310,6 +310,26 @@ class Curve extends Stack {
     }
 
     /*
+     * Adds a fixed amount to every grade. Useful for a small correction.
+     */
+    public void flatCurve(){
+        double a = pop();
+        for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
+            double x = stack.get(i);
+            x += a;
+            curvedGrades.add(x);
+        }
+        double hi = hiDiff(), mean = meanDiff(), low = lowDiff(), median = medianDiff(), mode = modeDiff();
+        statData.clear();
+        statData.add(hi);
+        statData.add(mean);
+        statData.add(low);
+        statData.add(median);
+        statData.add(mode);
+        curvedGrades.clear();
+    }
+
+    /*
      * Given four values, computes the a and b for the linear curve.
      */
     public void linearParams(){
@@ -566,7 +586,7 @@ class CalculatorForm extends Form{
         display.add(textbar);
 
 
-        Button root = new Button ("root");
+        Button root = new Button ("ROOT");
         root.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -596,7 +616,7 @@ class CalculatorForm extends Form{
             }
         });
 
-        Button lin = new Button("lin");
+        Button lin = new Button("LINEAR");
         lin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -626,7 +646,7 @@ class CalculatorForm extends Form{
             }
         });
 
-        Button bell = new Button("bell");
+        Button bell = new Button("BELL");
         bell.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -656,7 +676,7 @@ class CalculatorForm extends Form{
             }
         });
 
-        Button Param = new Button("param");
+        Button Param = new Button("PARAM");
         Param.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -671,7 +691,7 @@ class CalculatorForm extends Form{
             }
         });
 
-        Button Fix = new Button ("Fix");
+        Button Fix = new Button ("FIX");
         Fix.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -687,7 +707,7 @@ class CalculatorForm extends Form{
             }
         });
 
-        Button Stat = new Button("stat");
+        Button Stat = new Button("STAT");
         Stat.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -702,12 +722,18 @@ class CalculatorForm extends Form{
             }
         });
 
-        Button E = new Button ("E");
-        E.addActionListener(new ActionListener() {
+        Button Flat = new Button ("FLAT");
+        Flat.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                command += 'E';
-                showX(command);
-                showTextbar(0);
+                if (!command.isEmpty() && command.charAt(0) != '*') {
+                    Double x = Double.parseDouble(command);
+                    normalal.pop();
+                    normalal.push(x);
+                }
+                command = "";
+                curveal.flatCurve();
+                showXYST(normalal.getLastFourValues());
+                showTextbar(1);
             }
         });
 
@@ -726,7 +752,7 @@ class CalculatorForm extends Form{
             }
         });
 
-        Button Roll = new Button("Roll");
+        Button Roll = new Button("ROLL");
         Roll.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -1068,7 +1094,7 @@ class CalculatorForm extends Form{
         sci1.add(root); sci1.add(square);
         sci2.add(lin); sci2.add(cube);
         sci3.add(bell); sci3.add(SQRT);
-        sci4.add(E); sci4.add(Fix);
+        sci4.add(Flat); sci4.add(Fix);
         sci5.add(Param); sci5.add(Stat);
         sci6.add(X_Y); sci6.add(POP);
         sci7.add(Roll);sci7.add(clr);
