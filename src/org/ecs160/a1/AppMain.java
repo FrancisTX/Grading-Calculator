@@ -292,8 +292,8 @@ class Curve extends Stack {
     * onto the stack.
     */
     public void linearCurve() {
-        double a = pop();
         double b = pop();
+        double a = pop();
         for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
             double x = stack.get(i);
             x = a*x + b;
@@ -357,12 +357,18 @@ class Curve extends Stack {
         statData.add(modeRaw());
     }
 
+    /*
+     * Used to show stat data on the screen.
+     */
+    public Vector<Double> getStatData() {
+        return (Vector) statData.clone();
+    }
 
     /*
      * Finds the highest grades of the raw and curved scores, and returns the absolute difference.
      */
     public double hiDiff() {
-        return hiCurve() - hiRaw();
+        return Math.abs(hiCurve() - hiRaw());
     }
     public double hiCurve() {
         double max = Double.MIN_VALUE;
@@ -387,7 +393,7 @@ class Curve extends Stack {
      * Note: the mean doesn't actually represent any single student, but instead is a class average.
      */
     public double meanDiff() {
-        return meanCurve() - meanRaw();
+        return Math.abs(meanCurve() - meanRaw());
     }
     public double meanCurve() {
         double sum = 0;
@@ -409,7 +415,7 @@ class Curve extends Stack {
      * Finds the lowest grades of the raw and curved scores, and returns the absolute difference.
      */
     public double lowDiff() {
-        return lowCurve() - lowRaw();
+        return Math.abs(lowCurve() - lowRaw());
     }
     public double lowCurve() {
         double min = Double.MAX_VALUE;
@@ -429,10 +435,6 @@ class Curve extends Stack {
         return min;
     }
 
-    public Vector<Double> getStatData() {
-        return (Vector) statData.clone();
-    }
-
     /*
      * Finds the median grades of the raw and curved scores, and returns the absolute difference.
      * Note: the median represents the "middle" student, and may not represent the class average.
@@ -446,7 +448,7 @@ class Curve extends Stack {
         int n = getCursize();
         int mid = n/2;
         if ((double)(n % 2) == 0.0){
-            return (sortedGrades.get(mid) + sortedGrades.get(mid+1)) / 2.0;
+            return (sortedGrades.get(mid) + sortedGrades.get(mid-1)) / 2.0;
         } else {
             return (sortedGrades.get(mid));
         }// n is odd
@@ -457,7 +459,7 @@ class Curve extends Stack {
         int n = getCursize();
         int mid = n/2;
         if ((double)(n % 2) == 0.0){
-            return (sortedGrades.get(mid) + sortedGrades.get(mid+1)) / 2.0;
+            return (sortedGrades.get(mid) + sortedGrades.get(mid-1)) / 2.0;
         } else {
             return (sortedGrades.get(mid));
         }// n is odd
