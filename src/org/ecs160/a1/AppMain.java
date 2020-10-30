@@ -691,14 +691,6 @@ class CalculatorForm extends Form{
         });
 
         Button Roll = new Button("Roll");
-        Roll.getUnselectedStyle().setBgTransparency(255);
-        Roll.getUnselectedStyle().setFgColor(0x000000);
-        Roll.getAllStyles().setMargin(Component.TOP, 10);
-        Roll.getAllStyles().setMargin(Component.BOTTOM, 10);
-        Roll.getAllStyles().setMargin(Component.LEFT, 10);
-        Roll.getAllStyles().setMargin(Component.RIGHT, 10);
-        Roll.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        Roll.getAllStyles().setBgColor(0xff9900);
         Roll.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -1182,7 +1174,7 @@ class CalculatorForm extends Form{
             DecimalFormat df = new DecimalFormat("#0.00");
             q = new TextComponent().label("H:" + df.format(curveal.getStatData().get(0)) + " M:"+df.format(curveal.getStatData().get(1)) +
                     " L:"+df.format(curveal.getStatData().get(2))+ " Med:"+df.format(curveal.getStatData().get(3))
-                    + " Mode:" + df.format(curveal.getStatData().get(4)));
+                    + " Mod:" + df.format(curveal.getStatData().get(4)));
         } else {
             DecimalFormat df = new DecimalFormat("#0.00");
             q = new TextComponent().label("M:" + df.format(curveal.getStatData().get(0)) + " Mode:"+df.format(curveal.getStatData().get(1)) +
