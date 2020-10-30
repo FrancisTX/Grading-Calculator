@@ -279,11 +279,19 @@ class Curve extends Stack {
             sd += Math.pow(Math.abs(mean - x), 2);
         }
         sd = Math.sqrt(sd/getCursize());
+
         statData.clear();
-        statData.add(mean);
-        statData.add(mode);
-        statData.add(median);
+//        statData.add(mean);
+//        statData.add(mode);
+//        statData.add(median);
         statData.add(sd);
+        /*
+         * The following present A, B, C, and D cut off scores respectively. F scores are implied as lower than D.
+         */
+        statData.add(mean + (2*sd));
+        statData.add(mean + sd);
+        statData.add(mean - sd );
+        statData.add(mean - (2*sd));
         curvedGrades.clear();
     }
 
@@ -1236,13 +1244,22 @@ class CalculatorForm extends Form{
             q = new TextComponent().label("Stack Size:" + normalal.getCursize());
         } else if (i == 1){
             DecimalFormat df = new DecimalFormat("#0.00");
-            q = new TextComponent().label("H:" + df.format(curveal.getStatData().get(0)) + " M:"+df.format(curveal.getStatData().get(1)) +
-                    " L:"+df.format(curveal.getStatData().get(2))+ " Med:"+df.format(curveal.getStatData().get(3))
-                    + " Mod:" + df.format(curveal.getStatData().get(4)));
+            q = new TextComponent().label(
+                    "H:" + df.format(curveal.getStatData().get(0))
+                    + " M:" + df.format(curveal.getStatData().get(1))
+                    + " L:" + df.format(curveal.getStatData().get(2))
+                    + " Med:" + df.format(curveal.getStatData().get(3))
+                    + " Mod:" + df.format(curveal.getStatData().get(4))
+            );
         } else {
             DecimalFormat df = new DecimalFormat("#0.00");
-            q = new TextComponent().label("M:" + df.format(curveal.getStatData().get(0)) + " Mode:"+df.format(curveal.getStatData().get(1)) +
-                    " Med:"+df.format(curveal.getStatData().get(2))+ " sd:"+df.format(curveal.getStatData().get(3)));
+            q = new TextComponent().label(
+                    " SD:" + df.format(curveal.getStatData().get(0))
+                    + " A:" + df.format(curveal.getStatData().get(1))
+                    + " B:" + df.format(curveal.getStatData().get(2))
+                    + " C:" + df.format(curveal.getStatData().get(3))
+                    + " D:" + df.format(curveal.getStatData().get(4))
+            );
         }
         textbar.removeAll();
         textbar.add(q);
