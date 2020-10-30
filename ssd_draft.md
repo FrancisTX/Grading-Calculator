@@ -43,4 +43,13 @@ Cowculator computes and displays several statistics to help the professor in the
 * Mod: the delta computed of the mode score. This is the most frequently occuring score. Note Cowculator displays a "-1" should no mode exist.
 
 #Design
-##use case
+###User stories
+###use case
+###sequence diagram
+###class diagram
+###CalculatorForm Class
+###List Class
+###NormlAlgorithm Class
+###Curve Class
+###Stack Class
+
