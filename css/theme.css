@@ -1,0 +1,32 @@
+#Constants {
+    includeNativeBool: true; 
+}
+Button {
+	background-color:#7d5d3b;
+	border-radius:8px;
+	border:5px solid #54381e;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:50px;
+	padding:20px 24px;
+	text-decoration:none;
+	margin:0.3mm;
+}
+
+Button.pressed {
+  background:linear-gradient(to bottom, #7d5d3b 5%, #634b30 100%);
+}
+
+TextComponent{
+    border:5px solid #54381e;
+    background-color:#fabd7f;
+    margin:0.1mm;
+}
+
+TextField{
+    border:3px solid #54381e;
+    background-color:#cca278;
+    margin:0.3mm;
+}
+
+

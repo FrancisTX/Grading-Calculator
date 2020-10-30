@@ -407,18 +407,6 @@ class CalculatorForm extends Form{
 
 
         Button root = new Button ("root");
-        root.getUnselectedStyle().setBgTransparency(255);
-        root.getUnselectedStyle().setFgColor(0x000000);
-        root.getAllStyles().setPadding(Component.TOP, 5);
-        root.getAllStyles().setPadding(Component.BOTTOM, 5);
-        root.getAllStyles().setPadding(Component.LEFT, 3);
-        root.getAllStyles().setPadding(Component.RIGHT, 3);
-        root.getAllStyles().setMargin(Component.TOP, 10);
-        root.getAllStyles().setMargin(Component.BOTTOM, 10);
-        root.getAllStyles().setMargin(Component.LEFT, 10);
-        root.getAllStyles().setMargin(Component.RIGHT, 10);
-        root.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        root.getAllStyles().setBgColor(0xff9900);
         root.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -434,18 +422,6 @@ class CalculatorForm extends Form{
         });
 
         Button square = new Button ("x^2");
-        square.getUnselectedStyle().setBgTransparency(255);
-        square.getUnselectedStyle().setFgColor(0x000000);
-        square.getAllStyles().setPadding(Component.TOP, 5);
-        square.getAllStyles().setPadding(Component.BOTTOM, 5);
-        square.getAllStyles().setPadding(Component.LEFT, 3);
-        square.getAllStyles().setPadding(Component.RIGHT, 3);
-        square.getAllStyles().setMargin(Component.TOP, 10);
-        square.getAllStyles().setMargin(Component.BOTTOM, 10);
-        square.getAllStyles().setMargin(Component.LEFT, 10);
-        square.getAllStyles().setMargin(Component.RIGHT, 10);
-        square.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        square.getAllStyles().setBgColor(0xff9900);
         square.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -460,14 +436,6 @@ class CalculatorForm extends Form{
         });
 
         Button lin = new Button("lin");
-        lin.getUnselectedStyle().setBgTransparency(255);
-        lin.getUnselectedStyle().setFgColor(0x000000);
-        lin.getAllStyles().setMargin(Component.TOP, 10);
-        lin.getAllStyles().setMargin(Component.BOTTOM, 10);
-        lin.getAllStyles().setMargin(Component.LEFT, 10);
-        lin.getAllStyles().setMargin(Component.RIGHT, 10);
-        lin.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        lin.getAllStyles().setBgColor(0xff9900);
         lin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -485,14 +453,6 @@ class CalculatorForm extends Form{
         });
 
         Button cube = new Button ("x^3");
-        cube.getUnselectedStyle().setBgTransparency(255);
-        cube.getUnselectedStyle().setFgColor(0x000000);
-        cube.getAllStyles().setMargin(Component.TOP, 10);
-        cube.getAllStyles().setMargin(Component.BOTTOM, 10);
-        cube.getAllStyles().setMargin(Component.LEFT, 10);
-        cube.getAllStyles().setMargin(Component.RIGHT, 10);
-        cube.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        cube.getAllStyles().setBgColor(0xff9900);
         cube.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -508,14 +468,6 @@ class CalculatorForm extends Form{
         });
 
         Button bell = new Button("bell");
-        bell.getUnselectedStyle().setBgTransparency(255);
-        bell.getUnselectedStyle().setFgColor(0x000000);
-        bell.getAllStyles().setMargin(Component.TOP, 10);
-        bell.getAllStyles().setMargin(Component.BOTTOM, 10);
-        bell.getAllStyles().setMargin(Component.LEFT, 10);
-        bell.getAllStyles().setMargin(Component.RIGHT, 10);
-        bell.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        bell.getAllStyles().setBgColor(0xff9900);
         bell.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -530,14 +482,6 @@ class CalculatorForm extends Form{
         });
 
         Button SQRT = new Button ("SQRT");
-        SQRT.getUnselectedStyle().setBgTransparency(255);
-        SQRT.getUnselectedStyle().setFgColor(0x000000);
-        SQRT.getAllStyles().setMargin(Component.TOP, 10);
-        SQRT.getAllStyles().setMargin(Component.BOTTOM, 10);
-        SQRT.getAllStyles().setMargin(Component.LEFT, 10);
-        SQRT.getAllStyles().setMargin(Component.RIGHT, 10);
-        SQRT.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        SQRT.getAllStyles().setBgColor(0xff9900);
         SQRT.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -552,14 +496,6 @@ class CalculatorForm extends Form{
         });
 
         Button Log = new Button("Log");
-        Log.getUnselectedStyle().setBgTransparency(255);
-        Log.getUnselectedStyle().setFgColor(0x000000);
-        Log.getAllStyles().setMargin(Component.TOP, 10);
-        Log.getAllStyles().setMargin(Component.BOTTOM, 10);
-        Log.getAllStyles().setMargin(Component.LEFT, 10);
-        Log.getAllStyles().setMargin(Component.RIGHT, 10);
-        Log.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        Log.getAllStyles().setBgColor(0xff9900);
         Log.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -574,14 +510,6 @@ class CalculatorForm extends Form{
         });
 
         Button Pi = new Button ("Pi");
-        Pi.getUnselectedStyle().setBgTransparency(255);
-        Pi.getUnselectedStyle().setFgColor(0x000000);
-        Pi.getAllStyles().setMargin(Component.TOP, 10);
-        Pi.getAllStyles().setMargin(Component.BOTTOM, 10);
-        Pi.getAllStyles().setMargin(Component.LEFT, 10);
-        Pi.getAllStyles().setMargin(Component.RIGHT, 10);
-        Pi.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        Pi.getAllStyles().setBgColor(0xff9900);
         Pi.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -598,14 +526,6 @@ class CalculatorForm extends Form{
         });
 
         Button Ln = new Button("Ln");
-        Ln.getUnselectedStyle().setBgTransparency(255);
-        Ln.getUnselectedStyle().setFgColor(0x000000);
-        Ln.getAllStyles().setMargin(Component.TOP, 10);
-        Ln.getAllStyles().setMargin(Component.BOTTOM, 10);
-        Ln.getAllStyles().setMargin(Component.LEFT, 10);
-        Ln.getAllStyles().setMargin(Component.RIGHT, 10);
-        Ln.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        Ln.getAllStyles().setBgColor(0xff9900);
         Ln.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -620,14 +540,6 @@ class CalculatorForm extends Form{
         });
 
         Button E = new Button ("E");
-        E.getUnselectedStyle().setBgTransparency(255);
-        E.getUnselectedStyle().setFgColor(0x000000);
-        E.getAllStyles().setMargin(Component.TOP, 10);
-        E.getAllStyles().setMargin(Component.BOTTOM, 10);
-        E.getAllStyles().setMargin(Component.LEFT, 10);
-        E.getAllStyles().setMargin(Component.RIGHT, 10);
-        E.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        E.getAllStyles().setBgColor(0xff9900);
         E.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 command += 'E';
@@ -636,14 +548,6 @@ class CalculatorForm extends Form{
         });
 
         Button X_Y = new Button("X<->Y");
-        X_Y.getUnselectedStyle().setBgTransparency(255);
-        X_Y.getUnselectedStyle().setFgColor(0x000000);
-        X_Y.getAllStyles().setMargin(Component.TOP, 10);
-        X_Y.getAllStyles().setMargin(Component.BOTTOM, 10);
-        X_Y.getAllStyles().setMargin(Component.LEFT, 10);
-        X_Y.getAllStyles().setMargin(Component.RIGHT, 10);
-        X_Y.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        X_Y.getAllStyles().setBgColor(0xff9900);
         X_Y.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -658,14 +562,6 @@ class CalculatorForm extends Form{
         });
 
         Button POP = new Button ("POP");
-        POP.getUnselectedStyle().setBgTransparency(255);
-        POP.getUnselectedStyle().setFgColor(0x000000);
-        POP.getAllStyles().setMargin(Component.TOP, 10);
-        POP.getAllStyles().setMargin(Component.BOTTOM, 10);
-        POP.getAllStyles().setMargin(Component.LEFT, 10);
-        POP.getAllStyles().setMargin(Component.RIGHT, 10);
-        POP.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        POP.getAllStyles().setBgColor(0xff9900);
         POP.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 normalal.pop();
@@ -680,14 +576,6 @@ class CalculatorForm extends Form{
         });
 
         Button num_7 = new Button ("7");
-        num_7.getUnselectedStyle().setBgTransparency(255);
-        num_7.getUnselectedStyle().setFgColor(0x000000);
-        num_7.getAllStyles().setMargin(Component.TOP, 10);
-        num_7.getAllStyles().setMargin(Component.BOTTOM, 10);
-        num_7.getAllStyles().setMargin(Component.LEFT, 10);
-        num_7.getAllStyles().setMargin(Component.RIGHT, 10);
-        num_7.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        num_7.getAllStyles().setBgColor(0xff9900);
         num_7.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (command.isEmpty()) {
@@ -704,14 +592,6 @@ class CalculatorForm extends Form{
         });
 
         Button num_8 = new Button ("8");
-        num_8.getUnselectedStyle().setBgTransparency(255);
-        num_8.getUnselectedStyle().setFgColor(0x000000);
-        num_8.getAllStyles().setMargin(Component.TOP, 10);
-        num_8.getAllStyles().setMargin(Component.BOTTOM, 10);
-        num_8.getAllStyles().setMargin(Component.LEFT, 10);
-        num_8.getAllStyles().setMargin(Component.RIGHT, 10);
-        num_8.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        num_8.getAllStyles().setBgColor(0xff9900);
         num_8.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (command.isEmpty()) {
@@ -728,14 +608,6 @@ class CalculatorForm extends Form{
         });
 
         Button num_9 = new Button ("9");
-        num_9.getUnselectedStyle().setBgTransparency(255);
-        num_9.getUnselectedStyle().setFgColor(0x000000);
-        num_9.getAllStyles().setMargin(Component.TOP, 10);
-        num_9.getAllStyles().setMargin(Component.BOTTOM, 10);
-        num_9.getAllStyles().setMargin(Component.LEFT, 10);
-        num_9.getAllStyles().setMargin(Component.RIGHT, 10);
-        num_9.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        num_9.getAllStyles().setBgColor(0xff9900);
         num_9.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (command.isEmpty()) {
@@ -752,14 +624,6 @@ class CalculatorForm extends Form{
         });
 
         Button divide = new Button ("/");
-        divide.getUnselectedStyle().setBgTransparency(255);
-        divide.getUnselectedStyle().setFgColor(0x000000);
-        divide.getAllStyles().setMargin(Component.TOP, 10);
-        divide.getAllStyles().setMargin(Component.BOTTOM, 10);
-        divide.getAllStyles().setMargin(Component.LEFT, 10);
-        divide.getAllStyles().setMargin(Component.RIGHT, 10);
-        divide.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        divide.getAllStyles().setBgColor(0xff9900);
         divide.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -774,14 +638,6 @@ class CalculatorForm extends Form{
         });
 
         Button clr = new Button ("CLR");
-        clr.getUnselectedStyle().setBgTransparency(255);
-        clr.getUnselectedStyle().setFgColor(0x000000);
-        clr.getAllStyles().setMargin(Component.TOP, 10);
-        clr.getAllStyles().setMargin(Component.BOTTOM, 10);
-        clr.getAllStyles().setMargin(Component.LEFT, 10);
-        clr.getAllStyles().setMargin(Component.RIGHT, 10);
-        clr.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        clr.getAllStyles().setBgColor(0xff9900);
         clr.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 normalal.clear();
@@ -791,14 +647,6 @@ class CalculatorForm extends Form{
         });
 
         Button num_4 = new Button ("4");
-        num_4.getUnselectedStyle().setBgTransparency(255);
-        num_4.getUnselectedStyle().setFgColor(0x000000);
-        num_4.getAllStyles().setMargin(Component.TOP, 10);
-        num_4.getAllStyles().setMargin(Component.BOTTOM, 10);
-        num_4.getAllStyles().setMargin(Component.LEFT, 10);
-        num_4.getAllStyles().setMargin(Component.RIGHT, 10);
-        num_4.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        num_4.getAllStyles().setBgColor(0xff9900);
         num_4.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (command.isEmpty()) {
@@ -815,14 +663,6 @@ class CalculatorForm extends Form{
         });
 
         Button num_5 = new Button ("5");
-        num_5.getUnselectedStyle().setBgTransparency(255);
-        num_5.getUnselectedStyle().setFgColor(0x000000);
-        num_5.getAllStyles().setMargin(Component.TOP, 10);
-        num_5.getAllStyles().setMargin(Component.BOTTOM, 10);
-        num_5.getAllStyles().setMargin(Component.LEFT, 10);
-        num_5.getAllStyles().setMargin(Component.RIGHT, 10);
-        num_5.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        num_5.getAllStyles().setBgColor(0xff9900);
         num_5.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (command.isEmpty()) {
@@ -839,14 +679,6 @@ class CalculatorForm extends Form{
         });
 
         Button num_6 = new Button ("6");
-        num_6.getUnselectedStyle().setBgTransparency(255);
-        num_6.getUnselectedStyle().setFgColor(0x000000);
-        num_6.getAllStyles().setMargin(Component.TOP, 10);
-        num_6.getAllStyles().setMargin(Component.BOTTOM, 10);
-        num_6.getAllStyles().setMargin(Component.LEFT, 10);
-        num_6.getAllStyles().setMargin(Component.RIGHT, 10);
-        num_6.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        num_6.getAllStyles().setBgColor(0xff9900);
         num_6.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (command.isEmpty()) {
@@ -863,14 +695,6 @@ class CalculatorForm extends Form{
         });
 
         Button multiply = new Button ("*");
-        multiply.getUnselectedStyle().setBgTransparency(255);
-        multiply.getUnselectedStyle().setFgColor(0x000000);
-        multiply.getAllStyles().setMargin(Component.TOP, 10);
-        multiply.getAllStyles().setMargin(Component.BOTTOM, 10);
-        multiply.getAllStyles().setMargin(Component.LEFT, 10);
-        multiply.getAllStyles().setMargin(Component.RIGHT, 10);
-        multiply.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        multiply.getAllStyles().setBgColor(0xff9900);
         multiply.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -886,14 +710,6 @@ class CalculatorForm extends Form{
 
 
         Button delete = new Button ("<-");
-        delete.getUnselectedStyle().setBgTransparency(255);
-        delete.getUnselectedStyle().setFgColor(0x000000);
-        delete.getAllStyles().setMargin(Component.TOP, 10);
-        delete.getAllStyles().setMargin(Component.BOTTOM, 10);
-        delete.getAllStyles().setMargin(Component.LEFT, 10);
-        delete.getAllStyles().setMargin(Component.RIGHT, 10);
-        delete.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        delete.getAllStyles().setBgColor(0xff9900);
         delete.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -908,14 +724,6 @@ class CalculatorForm extends Form{
         });
 
         Button num_1 = new Button ("1");
-        num_1.getUnselectedStyle().setBgTransparency(255);
-        num_1.getUnselectedStyle().setFgColor(0x000000);
-        num_1.getAllStyles().setMargin(Component.TOP, 10);
-        num_1.getAllStyles().setMargin(Component.BOTTOM, 10);
-        num_1.getAllStyles().setMargin(Component.LEFT, 10);
-        num_1.getAllStyles().setMargin(Component.RIGHT, 10);
-        num_1.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        num_1.getAllStyles().setBgColor(0xff9900);
         num_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (command.isEmpty()) {
@@ -932,14 +740,6 @@ class CalculatorForm extends Form{
         });
 
         Button num_2 = new Button ("2");
-        num_2.getUnselectedStyle().setBgTransparency(255);
-        num_2.getUnselectedStyle().setFgColor(0x000000);
-        num_2.getAllStyles().setMargin(Component.TOP, 10);
-        num_2.getAllStyles().setMargin(Component.BOTTOM, 10);
-        num_2.getAllStyles().setMargin(Component.LEFT, 10);
-        num_2.getAllStyles().setMargin(Component.RIGHT, 10);
-        num_2.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        num_2.getAllStyles().setBgColor(0xff9900);
         num_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (command.isEmpty()) {
@@ -957,14 +757,6 @@ class CalculatorForm extends Form{
         });
 
         Button num_3 = new Button ("3");
-        num_3.getUnselectedStyle().setBgTransparency(255);
-        num_3.getUnselectedStyle().setFgColor(0x000000);
-        num_3.getAllStyles().setMargin(Component.TOP, 10);
-        num_3.getAllStyles().setMargin(Component.BOTTOM, 10);
-        num_3.getAllStyles().setMargin(Component.LEFT, 10);
-        num_3.getAllStyles().setMargin(Component.RIGHT, 10);
-        num_3.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        num_3.getAllStyles().setBgColor(0xff9900);
         num_3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (command.isEmpty()) {
@@ -981,14 +773,6 @@ class CalculatorForm extends Form{
         });
 
         Button minus = new Button ("-");
-        minus.getUnselectedStyle().setBgTransparency(255);
-        minus.getUnselectedStyle().setFgColor(0x000000);
-        minus.getAllStyles().setMargin(Component.TOP, 10);
-        minus.getAllStyles().setMargin(Component.BOTTOM, 10);
-        minus.getAllStyles().setMargin(Component.LEFT, 10);
-        minus.getAllStyles().setMargin(Component.RIGHT, 10);
-        minus.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        minus.getAllStyles().setBgColor(0xff9900);
         minus.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -1003,14 +787,6 @@ class CalculatorForm extends Form{
         });
 
         Button ent = new Button ("ENT");
-        ent.getUnselectedStyle().setBgTransparency(255);
-        ent.getUnselectedStyle().setFgColor(0x000000);
-        ent.getAllStyles().setMargin(Component.TOP, 10);
-        ent.getAllStyles().setMargin(Component.BOTTOM, 10);
-        ent.getAllStyles().setMargin(Component.LEFT, 10);
-        ent.getAllStyles().setMargin(Component.RIGHT, 10);
-        ent.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        ent.getAllStyles().setBgColor(0xff9900);
         ent.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 Double x;
@@ -1038,14 +814,6 @@ class CalculatorForm extends Form{
 
 
         Button num_0 = new Button ("0");
-        num_0.getUnselectedStyle().setBgTransparency(255);
-        num_0.getUnselectedStyle().setFgColor(0x000000);
-        num_0.getAllStyles().setMargin(Component.TOP, 10);
-        num_0.getAllStyles().setMargin(Component.BOTTOM, 10);
-        num_0.getAllStyles().setMargin(Component.LEFT, 10);
-        num_0.getAllStyles().setMargin(Component.RIGHT, 10);
-        num_0.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        num_0.getAllStyles().setBgColor(0xff9900);
         num_0.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (command.isEmpty()) {
@@ -1063,14 +831,6 @@ class CalculatorForm extends Form{
         });
 
         Button dot = new Button (".");
-        dot.getUnselectedStyle().setBgTransparency(255);
-        dot.getUnselectedStyle().setFgColor(0x000000);
-        dot.getAllStyles().setMargin(Component.TOP, 10);
-        dot.getAllStyles().setMargin(Component.BOTTOM, 10);
-        dot.getAllStyles().setMargin(Component.LEFT, 10);
-        dot.getAllStyles().setMargin(Component.RIGHT, 10);
-        dot.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        dot.getAllStyles().setBgColor(0xff9900);
         dot.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 command += ".";
@@ -1079,14 +839,6 @@ class CalculatorForm extends Form{
         });
 
         Button polyn = new Button ("Y^X");
-        polyn.getUnselectedStyle().setBgTransparency(255);
-        polyn.getUnselectedStyle().setFgColor(0x000000);
-        polyn.getAllStyles().setMargin(Component.TOP, 10);
-        polyn.getAllStyles().setMargin(Component.BOTTOM, 10);
-        polyn.getAllStyles().setMargin(Component.LEFT, 10);
-        polyn.getAllStyles().setMargin(Component.RIGHT, 10);
-        polyn.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        polyn.getAllStyles().setBgColor(0xff9900);
         polyn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -1101,14 +853,6 @@ class CalculatorForm extends Form{
         });
 
         Button add = new Button ("+");
-        add.getUnselectedStyle().setBgTransparency(255);
-        add.getUnselectedStyle().setFgColor(0x000000);
-        add.getAllStyles().setMargin(Component.TOP, 10);
-        add.getAllStyles().setMargin(Component.BOTTOM, 10);
-        add.getAllStyles().setMargin(Component.LEFT, 10);
-        add.getAllStyles().setMargin(Component.RIGHT, 10);
-        add.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
-        add.getAllStyles().setBgColor(0xff9900);
         add.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -1322,3 +1066,4 @@ class List extends Stack {
         return size;
     }
 }
+
