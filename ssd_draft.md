@@ -50,7 +50,16 @@ Cowculator computes and displays several statistics to help the professor in the
 
 ## UI and Keyboard
 
-The UI has four parts (a border layout), including screen, list/statistic info, keyborad and list storage button. They are in a box layout in x axis.
+The UI has four parts, including screen, list/statistic info, keyborad and list storage button. Screen has four lines, T, S, Y and X, <br/>
+which showing the entered data from users. The list/statistic info is showing some extra info. When the users is inputting the data, it <br/>
+shows the the current size of stack. When users have finish input and after apply the curving method, it shows all the statistic data above,<br/> 
+including highest score, mean score, lowest score, media and mod socre. The keyboard is for users to input and operate the data, detailed <br/>
+opertion is listed below. The List Storage is upper left coner button. All the history data users save will showing there. Users also could <br/>
+create new list there. <br/>
+
+Design layout: the whole page is a Border Layout with south and north part. The north subpart is the Box Layout contained screen and list/statistic<br/>
+info. The south part is a 5 * 5 grid layout design contained keyboard. For containing more buttons, we also add 1 * 2 little grid layout on one unit<br/>
+of 5 * 5.<br/>
 
 ### Info exhibiting
 
@@ -61,15 +70,14 @@ S: 0.000
 Y: 0.000
 X: 0.000
 ```
+
 List/statistic info:
 ```
 Stack Size: 0
 ````
-List Storage: upper left coner button, user could choose any history list.
 
 ### Keyboard
 
-Basically, A 5 * 5 grid layout design. For containing more buttons, we also add 1 * 2 little grid layout on one unit of 5 * 5.
 * Curving operation: `root` is root curving. `lin` is linear curving. `bell` is bell curving.
 * Arithmetic operation: <br/>
     logarithm: `+`, `-`, `*`, `\` , `.`, `Log` and `Ln`(natural logrithm)<br/>
