@@ -42,4 +42,5 @@ Cowculator computes and displays several statistics to help the professor in the
 * Med: the delta computed of the median score. Note this specifically represents one student, and may not represent the class average.
 * Mod: the delta computed of the mode score. This is the most frequently occuring score. Note Cowculator displays a "-1" should no mode exist.
 
-
+#Design
+##use case
