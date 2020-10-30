@@ -18,6 +18,7 @@ import com.codename1.ui.util.Resources;
 import com.codename1.io.Log;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Vector;
@@ -138,7 +139,7 @@ class Stack {
         stack.add(0.0);
         stack.add(0.0);
         stack.add(0.0);
-        cursize = -1;
+        cursize = 0;
     }
 
     public void clearX() {
@@ -146,13 +147,24 @@ class Stack {
         push(0.0);
     }
 
+    public void roll() {
+        Double num = stack.lastElement();
+        stack.add(0,num);
+        cursize = stack.size();
+        pop();
+    }
+
     public int getCursize() {
         return cursize;
+    }
+
+    public void setCursize(int size){
+        cursize = size;
     }
 }
 
 class NormalModeAlgorithm extends Stack {
-        public void plus(){
+    public void plus(){
         Vector<Double> xy = getXY();
         double result = xy.firstElement() + xy.lastElement();
         push(result);
@@ -188,31 +200,6 @@ class NormalModeAlgorithm extends Stack {
         push(result);
     }
 
-    public void sin() {
-        double x = pop();
-        double radians = Math.toRadians(x);
-        double result = Math.sin(radians);
-        push(result);
-    }
-
-    public void cos() {
-        double x = pop();
-        double radians = Math.toRadians(x);
-        double result = Math.cos(radians);
-        push(result);
-    }
-
-    public void tan() {
-        double x = pop();
-        double radians = Math.toRadians(x);
-        double result = Math.tan(radians);
-        push(result);
-    }
-
-    public void Pi() {
-        push(Math.PI);
-    }
-
     public void square() {
         double x = pop();
         double result = Math.pow(x,2);
@@ -241,12 +228,15 @@ class NormalModeAlgorithm extends Stack {
 class Curve extends Stack {
     /*
     * Offers three curving methods: root curve, bell curve, and linear curve. This presently doesn't work right if you
-    * want the average of only a single grade.
+    * want the average of only a single grade. Also computes 5 essential statistics: high, low, mean, median, and mode.
+    * Also has helper functions to compute the difference of those 5 statistics.
     */
     protected Vector<Double> curvedGrades;
+    private Vector<Double> statData;
 
     public Curve() {
         curvedGrades = new Vector<Double>(0);
+        statData = new Vector<Double>(0);
     }
 
     /*
@@ -260,10 +250,13 @@ class Curve extends Stack {
             x = Math.pow(100, 1-a)*Math.pow(x, a);
             curvedGrades.add(x);
         }
-        double hi = hiDiff(), mean = meanDiff(), low = lowDiff();
-        push(hi);
-        push(mean);
-        push(low);
+        double hi = hiDiff(), mean = meanDiff(), low = lowDiff(), median = medianDiff(), mode = modeDiff();
+        statData.clear();
+        statData.add(hi);
+        statData.add(mean);
+        statData.add(low);
+        statData.add(median);
+        statData.add(mode);
         curvedGrades.clear();
     }
 
@@ -272,16 +265,22 @@ class Curve extends Stack {
     */
     public void bellCurve() {
         double mean = meanRaw();
+        double mode = modeRaw();
+        double median = medianRaw();
         double sd = 0;
         for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
             double x = stack.get(i);
             sd += Math.pow(Math.abs(mean - x), 2);
         }
         sd = Math.sqrt(sd/getCursize());
-        push(mean);
-        push(sd);
+        statData.clear();
+        statData.add(mean);
+        statData.add(mode);
+        statData.add(median);
+        statData.add(sd);
         curvedGrades.clear();
     }
+
     /*
     * Shifts the entire class by a given amount. Pushes the new lowest grade, new mean grade, and new highest onto the
     * stack.
@@ -293,13 +292,19 @@ class Curve extends Stack {
             x = x+a;
             curvedGrades.add(x);
         }
-        double hi = hiCurve(), mean = meanCurve(), low = lowCurve();
-        push(hi);
-        push(mean);
-        push(low);
+        double hi = hiDiff(), mean = meanDiff(), low = lowDiff(), median = medianDiff(), mode = modeDiff();
+        statData.clear();
+        statData.add(hi);
+        statData.add(mean);
+        statData.add(low);
+        statData.add(median);
+        statData.add(mode);
         curvedGrades.clear();
     }
 
+    /*
+     * Finds the highest grades of the raw and curved scores, and returns the absolute difference.
+     */
     public double hiDiff() {
         return hiCurve() - hiRaw();
     }
@@ -321,7 +326,10 @@ class Curve extends Stack {
         return max;
     }
 
-
+    /*
+     * Computes the mean/average grade of the raw and curved scores, and returns the absolute difference.
+     * Note: the mean doesn't actually represent any single student, but instead is a class average.
+     */
     public double meanDiff() {
         return meanCurve() - meanRaw();
     }
@@ -341,6 +349,9 @@ class Curve extends Stack {
         return (sum / getCursize());
     }
 
+    /*
+     * Finds the lowest grades of the raw and curved scores, and returns the absolute difference.
+     */
     public double lowDiff() {
         return lowCurve() - lowRaw();
     }
@@ -361,28 +372,140 @@ class Curve extends Stack {
         }
         return min;
     }
+
+    public Vector<Double> getStatData() {
+        return (Vector) statData.clone();
+    }
+
+    /*
+     * Finds the median grades of the raw and curved scores, and returns the absolute difference.
+     * Note: the median represents the "middle" student, and may not represent the class average.
+     */
+    public double medianDiff(){
+        return Math.abs(medianCurve() - medianRaw());
+    }
+    public double medianCurve(){
+        Vector<Double> sortedGrades = new Vector<>(curvedGrades);
+        Collections.sort(sortedGrades);
+        int n = getCursize();
+        int mid = n/2;
+        if ((double)(n % 2) == 0.0){
+            return (sortedGrades.get(mid) + sortedGrades.get(mid+1)) / 2.0;
+        } else {
+            return (sortedGrades.get(mid));
+        }// n is odd
+    }
+    public double medianRaw(){
+        Vector<Double> sortedGrades = new Vector<>(stack);
+        Collections.sort(sortedGrades);
+        int n = getCursize();
+        int mid = n/2;
+        if ((double)(n % 2) == 0.0){
+            return (sortedGrades.get(mid) + sortedGrades.get(mid+1)) / 2.0;
+        } else {
+            return (sortedGrades.get(mid));
+        }// n is odd
+    }
+
+    /*
+     * Find the most occurring grade of the raw and curved scores, and returns the absolute difference.
+     * Note: the mode may not exist. In this case, we return a "-1".```
+     */
+    public double modeDiff(){
+        return Math.abs(modeCurve() - modeRaw());
+    }
+    public double modeCurve(){
+        double mode = 0;
+        int count = 0;
+        for (double x: curvedGrades) {
+            int countTmp = 0;
+            for (double y: curvedGrades) {
+                if (x == y) {
+                    countTmp++;
+                }
+            }
+            if (countTmp > count) {
+                count = countTmp;
+                mode = x;
+            }
+        }
+        if (count > 1) {
+            return mode;
+        } else {
+            return -1;
+        } // if count is 1 (or less somehow), then there are no repetitions
+          //  and therefore no mode
+    }
+    public double modeRaw(){
+        double mode = 0;
+        int count = 0;
+        for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
+            double x = stack.get(i);
+            int countTmp = 0;
+            for (int j = stack.size() - 1; j >= Math.abs(stack.size() - getCursize()); j--) {
+                double y = stack.get(j);
+                if (x == y) {
+                    countTmp++;
+                }
+            }
+            if (countTmp > count) {
+                count = countTmp;
+                mode = x;
+            }
+        }
+        if (count > 1) {
+            return mode;
+        } else {
+            return -1;
+        } // if count is 1 (or less somehow), then there are no repetitions
+        //  and therefore no mode
+    }
 }
 
 class CalculatorForm extends Form{
-    Container tRegister = new Container(new BoxLayout(BoxLayout.X_AXIS));
-    Container sRegister = new Container(new BoxLayout(BoxLayout.X_AXIS));
-    Container yRegister = new Container(new BoxLayout(BoxLayout.X_AXIS));
-    Container xRegister = new Container(new BoxLayout(BoxLayout.X_AXIS));
-    Container display = new Container(new BoxLayout(BoxLayout.Y_AXIS));
-    Container sci1 = new Container(new GridLayout(2,1));
-    Container sci2 = new Container(new GridLayout(2,1));
-    Container sci3 = new Container(new GridLayout(2,1));
-    Container sci4 = new Container(new GridLayout(2,1));
-    Container sci5 = new Container(new GridLayout(2,1));
-    Container sci6 = new Container(new GridLayout(2,1));
-    Container keyboard = new Container(new GridLayout(5,5));
+    private Container tRegister;
+    private Container sRegister;
+    private Container yRegister;
+    private Container xRegister;
+    private Container display;
+    private Container sci1;
+    private Container sci2;
+    private Container sci3;
+    private Container sci4;
+    private Container sci5;
+    private Container sci6;
+    private Container sci7;
+    private Container keyboard;
+    private Container textbar;
 
-    private String command = new String("");
-    private NormalModeAlgorithm normalal = new NormalModeAlgorithm();
-    private List list = new List();
-    private Curve curveal = new Curve();
+    private String command;
+    private NormalModeAlgorithm normalal;
+    private List list;
+    private Curve curveal;
+    private int decPlaces;
 
     public CalculatorForm() {
+        tRegister = new Container(new BoxLayout(BoxLayout.X_AXIS));
+        sRegister = new Container(new BoxLayout(BoxLayout.X_AXIS));
+        yRegister = new Container(new BoxLayout(BoxLayout.X_AXIS));
+        xRegister = new Container(new BoxLayout(BoxLayout.X_AXIS));
+        display = new Container(new BoxLayout(BoxLayout.Y_AXIS));
+        sci1 = new Container(new GridLayout(2,1));
+        sci2 = new Container(new GridLayout(2,1));
+        sci3 = new Container(new GridLayout(2,1));
+        sci4 = new Container(new GridLayout(2,1));
+        sci5 = new Container(new GridLayout(2,1));
+        sci6 = new Container(new GridLayout(2,1));
+        sci7 = new Container(new GridLayout(2,1));
+        keyboard = new Container(new GridLayout(5,5));
+        textbar = new Container(new BoxLayout(BoxLayout.X_AXIS));
+
+        command = new String("*");
+        normalal = new NormalModeAlgorithm();
+        list = new List();
+        curveal = new Curve();
+        decPlaces = 3;
+
         setLayout(new BorderLayout());
         setTitle("RPN Calculator V0.01");
 
@@ -403,7 +526,8 @@ class CalculatorForm extends Form{
         display.add(xRegister);
 
         TextComponent input = new TextComponent( ).label("");
-        display.add(input);
+        textbar.add(input);
+        display.add(textbar);
 
 
         Button root = new Button ("root");
@@ -417,7 +541,7 @@ class CalculatorForm extends Form{
                 command = "";
                 curveal.rootCurve();
                 showXYST(normalal.getLastFourValues());
-                //list.saveList("List1");
+                showTextbar(1);
             }
         });
 
@@ -432,6 +556,7 @@ class CalculatorForm extends Form{
                 command = "";
                 normalal.square();
                 showXYST(normalal.getLastFourValues());
+                showTextbar(0);
             }
         });
 
@@ -446,9 +571,7 @@ class CalculatorForm extends Form{
                 command = "";
                 curveal.linearCurve();
                 showXYST(normalal.getLastFourValues());
-
-                //list.loadList("List1");
-                //showXYST(normalal.getLastFourValues());
+                showTextbar(1);
             }
         });
 
@@ -463,7 +586,7 @@ class CalculatorForm extends Form{
                 command = "";
                 normalal.cube();
                 showXYST(normalal.getLastFourValues());
-
+                showTextbar(0);
             }
         });
 
@@ -478,6 +601,7 @@ class CalculatorForm extends Form{
                 command = "";
                 curveal.bellCurve();
                 showXYST(normalal.getLastFourValues());
+                showTextbar(2);
             }
         });
 
@@ -492,6 +616,7 @@ class CalculatorForm extends Form{
                 command = "";
                 normalal.sqrt();
                 showXYST(normalal.getLastFourValues());
+                showTextbar(0);
             }
         });
 
@@ -506,22 +631,23 @@ class CalculatorForm extends Form{
                 command = "";
                 normalal.log();
                 showXYST(normalal.getLastFourValues());
+                showTextbar(0);
             }
         });
 
-        Button Pi = new Button ("Pi");
-        Pi.addActionListener(new ActionListener() {
+        Button Fix = new Button ("Fix");
+        Fix.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
                     Double x = Double.parseDouble(command);
                     normalal.pop();
                     normalal.push(x);
-                } else {
-                    normalal.pop();
                 }
                 command = "";
-                normalal.Pi();
+                fix();
+                if (normalal.getCursize() == 0) command = "*";
                 showXYST(normalal.getLastFourValues());
+                showTextbar(0);
             }
         });
 
@@ -536,6 +662,7 @@ class CalculatorForm extends Form{
                 command = "";
                 normalal.ln();
                 showXYST(normalal.getLastFourValues());
+                showTextbar(0);
             }
         });
 
@@ -544,6 +671,7 @@ class CalculatorForm extends Form{
             public void actionPerformed(ActionEvent evt) {
                 command += 'E';
                 showX(command);
+                showTextbar(0);
             }
         });
 
@@ -558,6 +686,30 @@ class CalculatorForm extends Form{
                 command = "";
                 normalal.xyInterchange();
                 showXYST(normalal.getLastFourValues());
+                showTextbar(0);
+            }
+        });
+
+        Button Roll = new Button("Roll");
+        Roll.getUnselectedStyle().setBgTransparency(255);
+        Roll.getUnselectedStyle().setFgColor(0x000000);
+        Roll.getAllStyles().setMargin(Component.TOP, 10);
+        Roll.getAllStyles().setMargin(Component.BOTTOM, 10);
+        Roll.getAllStyles().setMargin(Component.LEFT, 10);
+        Roll.getAllStyles().setMargin(Component.RIGHT, 10);
+        Roll.getAllStyles().setBorder(Border.createDashedBorder(4, ColorUtil.BLACK));
+        Roll.getAllStyles().setBgColor(0xff9900);
+        Roll.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                if (!command.isEmpty() && command.charAt(0) != '*') {
+                    Double x = Double.parseDouble(command);
+                    normalal.pop();
+                    normalal.push(x);
+                }
+                command = "";
+                normalal.roll();
+                showXYST(normalal.getLastFourValues());
+                showTextbar(0);
             }
         });
 
@@ -566,6 +718,7 @@ class CalculatorForm extends Form{
             public void actionPerformed(ActionEvent evt) {
                 normalal.pop();
                 showXYST(normalal.getLastFourValues());
+                showTextbar(0);
                 if (!command.isEmpty() && command.charAt(0) != '*') {
                     showX(command);
                 } else {
@@ -583,6 +736,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                     normalal.push(x);
                     showXYST(normalal.getLastFourValues());
+                    showTextbar(0);
                 } else {
                     if (command.charAt(0) == '*') command = "";
                 }
@@ -599,6 +753,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                     normalal.push(x);
                     showXYST(normalal.getLastFourValues());
+                    showTextbar(0);
                 } else {
                     if (command.charAt(0) == '*') command = "";
                 }
@@ -615,6 +770,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                     normalal.push(x);
                     showXYST(normalal.getLastFourValues());
+                    showTextbar(0);
                 } else {
                     if (command.charAt(0) == '*') command = "";
                 }
@@ -634,6 +790,7 @@ class CalculatorForm extends Form{
                 command = "";
                 normalal.divide();
                 showXYST(normalal.getLastFourValues());
+                showTextbar(0);
             }
         });
 
@@ -641,8 +798,9 @@ class CalculatorForm extends Form{
         clr.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 normalal.clear();
-                command = "";
+                command = "*";
                 showXYST(normalal.getLastFourValues());
+                showTextbar(0);
             }
         });
 
@@ -654,6 +812,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                     normalal.push(x);
                     showXYST(normalal.getLastFourValues());
+                    showTextbar(0);
                 } else {
                     if (command.charAt(0) == '*') command = "";
                 }
@@ -670,6 +829,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                     normalal.push(x);
                     showXYST(normalal.getLastFourValues());
+                    showTextbar(0);
                 } else {
                     if (command.charAt(0) == '*') command = "";
                 }
@@ -686,6 +846,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                     normalal.push(x);
                     showXYST(normalal.getLastFourValues());
+                    showTextbar(0);
                 } else {
                     if (command.charAt(0) == '*') command = "";
                 }
@@ -705,6 +866,7 @@ class CalculatorForm extends Form{
                 command = "";
                 normalal.multiply();
                 showXYST(normalal.getLastFourValues());
+                showTextbar(0);
             }
         });
 
@@ -719,6 +881,7 @@ class CalculatorForm extends Form{
                     normalal.clearX();
                     command = "*";
                     showXYST(normalal.getLastFourValues());
+                    showTextbar(0);
                 }
             }
         });
@@ -731,6 +894,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                     normalal.push(x);
                     showXYST(normalal.getLastFourValues());
+                    showTextbar(0);
                 } else {
                     if (command.charAt(0) == '*') command = "";
                 }
@@ -747,6 +911,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                     normalal.push(x);
                     showXYST(normalal.getLastFourValues());
+                    showTextbar(0);
                 } else {
                     if (command.charAt(0) == '*') command = "";
                 }
@@ -764,6 +929,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                     normalal.push(x);
                     showXYST(normalal.getLastFourValues());
+                    showTextbar(0);
                 } else {
                     if (command.charAt(0) == '*') command = "";
                 }
@@ -783,6 +949,7 @@ class CalculatorForm extends Form{
                 command = "";
                 normalal.minus();
                 showXYST(normalal.getLastFourValues());
+                showTextbar(0);
             }
         });
 
@@ -809,6 +976,7 @@ class CalculatorForm extends Form{
                 normalal.push(x);
                 command = "*";
                 showXYST(normalal.getLastFourValues());
+                showTextbar(0);
             }
         });
 
@@ -821,6 +989,7 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                     normalal.push(x);
                     showXYST(normalal.getLastFourValues());
+                    showTextbar(0);
                 } else {
                     if (command.charAt(0) == '*') command = "";
                 }
@@ -849,6 +1018,7 @@ class CalculatorForm extends Form{
                 command = "";
                 normalal.yPowerx();
                 showXYST(normalal.getLastFourValues());
+                showTextbar(0);
             }
         });
 
@@ -863,15 +1033,17 @@ class CalculatorForm extends Form{
                 command = "";
                 normalal.plus();
                 showXYST(normalal.getLastFourValues());
+                showTextbar(0);
             }
         });
 
         sci1.add(root); sci1.add(square);
         sci2.add(lin); sci2.add(cube);
         sci3.add(bell); sci3.add(SQRT);
-        sci4.add(Log); sci4.add(Pi);
+        sci4.add(Log); sci4.add(Fix);
         sci5.add(Ln); sci5.add(E);
         sci6.add(X_Y); sci6.add(POP);
+        sci7.add(Roll);sci7.add(clr);
 
         keyboard.add(sci1);
         keyboard.add(sci2);
@@ -883,7 +1055,7 @@ class CalculatorForm extends Form{
         keyboard.add(num_8);
         keyboard.add(num_9);
         keyboard.add(divide);
-        keyboard.add(clr);
+        keyboard.add(sci7);
         keyboard.add(num_4);
         keyboard.add(num_5);
         keyboard.add(num_6);
@@ -906,9 +1078,10 @@ class CalculatorForm extends Form{
 
         show();
         showXYST(normalal.getLastFourValues());
+        showTextbar(0);
     }
 
-    public void iniToolbar() {
+    private void iniToolbar() {
         getToolbar().addCommandToSideMenu ("  +", null, (e) -> {
             String num;
             if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -952,23 +1125,34 @@ class CalculatorForm extends Form{
             list.loadList(file);
             getToolbar().closeLeftSideMenu();
             showXYST(normalal.getLastFourValues());
+            showTextbar(0);
             command = "";
         });
         getToolbar().addComponentToLeftSideMenu(content);
     }
 
-    public void showX(String x) {
+    private void showX(String x) {
         TextComponent tex = new TextComponent().label("X:" + x + "_");
         xRegister.removeAll();
         xRegister.add(tex);
         show();
     }
 
-    public void showXYST(Vector<Double> xyst) {
-        TextComponent x = new TextComponent().label("X:" + xyst.get(0).toString());
-        TextComponent y = new TextComponent().label("Y:" + xyst.get(1).toString());
-        TextComponent s = new TextComponent().label("S:" + xyst.get(2).toString());
-        TextComponent t = new TextComponent().label("T:" + xyst.get(3).toString());
+    private void showXYST(Vector<Double> xyst) {
+        DecimalFormat df;
+
+        if (decPlaces == 0) {
+            df = new DecimalFormat("#0");
+        } else if (decPlaces == 2) {
+            df = new DecimalFormat("#0.00");
+        } else {
+            df = new DecimalFormat("#0.000");
+        }
+
+        TextComponent x = new TextComponent().label("X:" + df.format(xyst.get(0)));
+        TextComponent y = new TextComponent().label("Y:" + df.format(xyst.get(1)));
+        TextComponent s = new TextComponent().label("S:" + df.format(xyst.get(2)));
+        TextComponent t = new TextComponent().label("T:" + df.format(xyst.get(3)));
         xRegister.removeAll();
         yRegister.removeAll();
         sRegister.removeAll();
@@ -980,6 +1164,34 @@ class CalculatorForm extends Form{
         show();
     }
 
+    private void fix() {
+        if (decPlaces == 0) {
+            decPlaces = 2;
+        } else if (decPlaces == 2) {
+            decPlaces = 3;
+        } else {
+            decPlaces = 0;
+        }
+    }
+
+    private void showTextbar(int i ){
+        TextComponent q;
+        if (i == 0){
+            q = new TextComponent().label("Stack Size:" + normalal.getCursize());
+        } else if (i == 1){
+            DecimalFormat df = new DecimalFormat("#0.00");
+            q = new TextComponent().label("H:" + df.format(curveal.getStatData().get(0)) + " M:"+df.format(curveal.getStatData().get(1)) +
+                    " L:"+df.format(curveal.getStatData().get(2))+ " Med:"+df.format(curveal.getStatData().get(3))
+                    + " Mode:" + df.format(curveal.getStatData().get(4)));
+        } else {
+            DecimalFormat df = new DecimalFormat("#0.00");
+            q = new TextComponent().label("M:" + df.format(curveal.getStatData().get(0)) + " Mode:"+df.format(curveal.getStatData().get(1)) +
+                    " Med:"+df.format(curveal.getStatData().get(2))+ " sd:"+df.format(curveal.getStatData().get(3)));
+        }
+        textbar.removeAll();
+        textbar.add(q);
+        show();
+    }
 }
 
 class List extends Stack {
@@ -1003,7 +1215,7 @@ class List extends Stack {
                     listname = "";
                 }
             }
-            if (list.elementAt(0).equals("null")) {
+            if (list.elementAt(0).equals("")) {
                 list.remove(0);
             }
         }
@@ -1013,7 +1225,7 @@ class List extends Stack {
 
     public void saveList(String listname){
         String data = stack.toString();
-        data = data.substring(1,data.length()-1).replace(","," ");
+        data = data.substring(1,data.length()-1).replace(","," ") + " "+ getCursize();
         Preferences.set(listname, data);
         Preferences.set("allList",Preferences.get("allList",null)+"!"+ listname);
         list.add(listname);
@@ -1037,6 +1249,7 @@ class List extends Stack {
             }
         }
         curlistname = listname;
+        setCursize((int)pop());
     }
 
     public void deleteList(String listname) {
