@@ -42,8 +42,17 @@ Cowculator computes and displays several statistics to help the professor in the
 * Med: the delta computed of the median score. Note this specifically represents one student, and may not represent the class average.
 * Mod: the delta computed of the mode score. This is the most frequently occuring score. Note Cowculator displays a "-1" should no mode exist.
 
+#User stories
+As a class instructor or professor, I want to have functions like what regular RPN calcualtor has 
+so that I can do some basic arithmetic quickly and manipulate the stack easily. I also want the calculator to be able to 
+do some curve operations so that I can quickly enter a list and do some roughly view on statistic datas with different 
+curve functions. I hope I can save lists into the calcualtor so that I don't have to rentry a list every times when I 
+want to apply different curve functions to it.
+
 #Design
-###User stories
+The general design of the calcualtor is to statisfy three major requirement:
+
+
 ###use case
 ###sequence diagram
 ###class diagram
