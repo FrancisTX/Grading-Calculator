@@ -1278,7 +1278,7 @@ class List extends Stack {
         String allList = Preferences.get("allList", null);
         String listname = "";
 
-        if (!allList.isEmpty()) {
+        if (allList != null) {
             allList += "!";
             for (int i = 0; i < allList.length(); i++) {
                 if (allList.charAt(i) != '!') {
