@@ -698,7 +698,7 @@ class CalculatorForm extends Form{
                 command = "";
                 curveal.rawStats();
                 showXYST(normalal.getLastFourValues());
-                showTextbar(0);
+                showTextbar(1);
             }
         });
 
