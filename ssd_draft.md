@@ -50,7 +50,9 @@ Cowculator computes and displays several statistics to help the professor in the
 
 ## UI and Keyboard
 
-### UI
+The UI has four parts (a border layout), including screen, list/statistic info, keyborad and list storage button. They are in a box layout in x axis.
+
+### Info exhibiting
 
 Screen:
 ```
@@ -64,8 +66,10 @@ List/statistic info:
 Stack Size: 0
 ````
 List Storage: upper left coner button, user could choose any history list.
+
 ### Keyboard
 
+Basically, A 5*5 grid layout design. For containing more buttons, we also add 1*2 little grid layout on one unit of 5*5.
 * Curving operation: `root` is root curving. `lin` is linear curving. `bell` is bell curving.
 * Arithmetic operation: <br/>
     logarithm: `+`, `-`, `*`, `\` , `.`, `Log` and `Ln`(natural logrithm)<br/>
