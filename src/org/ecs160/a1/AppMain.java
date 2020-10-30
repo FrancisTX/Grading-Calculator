@@ -273,10 +273,11 @@ class Curve extends Stack {
             sd += Math.pow(Math.abs(mean - x), 2);
         }
         sd = Math.sqrt(sd/getCursize());
-        push(mean);
-        push(mode);
-        push(median);
-        push(sd);
+        statData.clear();
+        statData.add(mean);
+        statData.add(mode);
+        statData.add(median);
+        statData.add(sd);
         curvedGrades.clear();
     }
 
@@ -648,7 +649,7 @@ class CalculatorForm extends Form{
                 command = "";
                 curveal.bellCurve();
                 showXYST(normalal.getLastFourValues());
-                showTextbar(1);
+                showTextbar(2);
             }
         });
 
@@ -1433,9 +1434,15 @@ class CalculatorForm extends Form{
         TextComponent q;
         if (i == 0){
             q = new TextComponent().label("Stack Size:" + normalal.getCursize());
+        } else if (i == 1){
+            DecimalFormat df = new DecimalFormat("#0.00");
+            q = new TextComponent().label("H:" + df.format(curveal.getStatData().get(0)) + " M:"+df.format(curveal.getStatData().get(1)) +
+                    " L:"+df.format(curveal.getStatData().get(2))+ " Med:"+df.format(curveal.getStatData().get(3))
+                    + " Mode:" + df.format(curveal.getStatData().get(4)));
         } else {
             DecimalFormat df = new DecimalFormat("#0.00");
-            q = new TextComponent().label("H:" + df.format(curveal.getStatData().get(0)) + "  Mean:"+df.format(curveal.getStatData().get(1)) +"  L:"+df.format(curveal.getStatData().get(2)));
+            q = new TextComponent().label("M:" + df.format(curveal.getStatData().get(0)) + " Mode:"+df.format(curveal.getStatData().get(1)) +
+                    " Med:"+df.format(curveal.getStatData().get(2))+ " sd:"+df.format(curveal.getStatData().get(3)));
         }
         textbar.removeAll();
         textbar.add(q);
