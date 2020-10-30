@@ -227,7 +227,7 @@ class NormalModeAlgorithm extends Stack {
 
 class Curve extends Stack {
     /*
-    * Offers three curving methods: root curve, bell curve, and linear curve. This presently doesn't work right if you
+    * Offers four curving methods: root curve, bell curve, flat and linear curve. This presently doesn't work right if you
     * want the average of only a single grade. Also computes 5 essential statistics: high, low, mean, median, and mode.
     * Also has helper functions to compute the difference of those 5 statistics.
     */
@@ -240,17 +240,23 @@ class Curve extends Stack {
     }
 
     /*
-     * rootCurve() computes the root curve based off some values 0 < a < 1, then pushes the difference of the highest
-     * grade, the mean grade, and the lowest grade onto the stack.
+     * rootCurve() computes the root curve based off some values 0 < a < 1, then pushes some vital stats onto the stack.
      */
     public void rootCurve() {
+        double hi = -1, mean = -1, low = -1, median = -1, mode = -1;
         double a = pop();
-        for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
-            double x = stack.get(i);
-            x = Math.pow(100, 1-a)*Math.pow(x, a);
-            curvedGrades.add(x);
+        if (a > 0.0 && a < 1.0) {
+            for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
+                double x = stack.get(i);
+                x = Math.pow(100, 1 - a) * Math.pow(x, a);
+                curvedGrades.add(x);
+            }
+            hi = hiDiff();
+            mean = meanDiff();
+            low = lowDiff();
+            median = medianDiff();
+            mode = modeDiff();
         }
-        double hi = hiDiff(), mean = meanDiff(), low = lowDiff(), median = medianDiff(), mode = modeDiff();
         statData.clear();
         statData.add(hi);
         statData.add(mean);
@@ -265,31 +271,35 @@ class Curve extends Stack {
     */
     public void bellCurve() {
         double mean = meanRaw();
-        double mode = modeRaw();
-        double median = medianRaw();
         double sd = 0;
         for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
             double x = stack.get(i);
             sd += Math.pow(Math.abs(mean - x), 2);
         }
         sd = Math.sqrt(sd/getCursize());
+
         statData.clear();
-        statData.add(mean);
-        statData.add(mode);
-        statData.add(median);
         statData.add(sd);
+        /*
+         * The following present A, B, C, and D cut off scores respectively. F scores are implied as lower than D.
+         */
+        statData.add(mean + (2*sd));
+        statData.add(mean + sd);
+        statData.add(mean - sd );
+        statData.add(mean - (2*sd));
         curvedGrades.clear();
     }
 
     /*
-    * Shifts the entire class by a given amount. Pushes the new lowest grade, new mean grade, and new highest onto the
-    * stack.
+    * Shifts the entire class by a given amount according to a linear function y = ax+b. Pushes essential statistics
+    * onto the stack.
     */
     public void linearCurve() {
+        double b = pop();
         double a = pop();
         for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
             double x = stack.get(i);
-            x = x+a;
+            x = a*x + b;
             curvedGrades.add(x);
         }
         double hi = hiDiff(), mean = meanDiff(), low = lowDiff(), median = medianDiff(), mode = modeDiff();
@@ -303,10 +313,65 @@ class Curve extends Stack {
     }
 
     /*
+     * Adds a fixed amount to every grade. Useful for a small correction.
+     */
+    public void flatCurve(){
+        double a = pop();
+        for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
+            double x = stack.get(i);
+            x += a;
+            curvedGrades.add(x);
+        }
+        double hi = hiDiff(), mean = meanDiff(), low = lowDiff(), median = medianDiff(), mode = modeDiff();
+        statData.clear();
+        statData.add(hi);
+        statData.add(mean);
+        statData.add(low);
+        statData.add(median);
+        statData.add(mode);
+        curvedGrades.clear();
+    }
+
+    /*
+     * Given four values, computes the a and b for the linear curve.
+     */
+    public void linearParams(){
+        double highFinal = pop();
+        double highRaw = pop();
+        double lowFinal = pop();
+        double lowRaw = pop();
+
+        double a = (highFinal - lowFinal) / (highRaw - lowRaw);
+        double b = lowFinal - (a * lowRaw);
+        push(a);
+        push(b);
+    }
+
+    /*
+     * Displays essential stats for the raw, uncurved grades. Useful for determining which grades to use for
+     * linear curving.
+     */
+    public void rawStats(){
+        statData.clear();
+        statData.add(hiRaw());
+        statData.add(meanRaw());
+        statData.add(lowRaw());
+        statData.add(medianRaw());
+        statData.add(modeRaw());
+    }
+
+    /*
+     * Used to show stat data on the screen.
+     */
+    public Vector<Double> getStatData() {
+        return (Vector) statData.clone();
+    }
+
+    /*
      * Finds the highest grades of the raw and curved scores, and returns the absolute difference.
      */
     public double hiDiff() {
-        return hiCurve() - hiRaw();
+        return Math.abs(hiCurve() - hiRaw());
     }
     public double hiCurve() {
         double max = Double.MIN_VALUE;
@@ -331,7 +396,7 @@ class Curve extends Stack {
      * Note: the mean doesn't actually represent any single student, but instead is a class average.
      */
     public double meanDiff() {
-        return meanCurve() - meanRaw();
+        return Math.abs(meanCurve() - meanRaw());
     }
     public double meanCurve() {
         double sum = 0;
@@ -353,7 +418,7 @@ class Curve extends Stack {
      * Finds the lowest grades of the raw and curved scores, and returns the absolute difference.
      */
     public double lowDiff() {
-        return lowCurve() - lowRaw();
+        return Math.abs(lowCurve() - lowRaw());
     }
     public double lowCurve() {
         double min = Double.MAX_VALUE;
@@ -373,10 +438,6 @@ class Curve extends Stack {
         return min;
     }
 
-    public Vector<Double> getStatData() {
-        return (Vector) statData.clone();
-    }
-
     /*
      * Finds the median grades of the raw and curved scores, and returns the absolute difference.
      * Note: the median represents the "middle" student, and may not represent the class average.
@@ -390,7 +451,7 @@ class Curve extends Stack {
         int n = getCursize();
         int mid = n/2;
         if ((double)(n % 2) == 0.0){
-            return (sortedGrades.get(mid) + sortedGrades.get(mid+1)) / 2.0;
+            return (sortedGrades.get(mid) + sortedGrades.get(mid-1)) / 2.0;
         } else {
             return (sortedGrades.get(mid));
         }// n is odd
@@ -401,7 +462,7 @@ class Curve extends Stack {
         int n = getCursize();
         int mid = n/2;
         if ((double)(n % 2) == 0.0){
-            return (sortedGrades.get(mid) + sortedGrades.get(mid+1)) / 2.0;
+            return (sortedGrades.get(mid) + sortedGrades.get(mid-1)) / 2.0;
         } else {
             return (sortedGrades.get(mid));
         }// n is odd
@@ -530,7 +591,7 @@ class CalculatorForm extends Form{
         display.add(textbar);
 
 
-        Button root = new Button ("root");
+        Button root = new Button ("ROOT");
         root.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -560,7 +621,7 @@ class CalculatorForm extends Form{
             }
         });
 
-        Button lin = new Button("lin");
+        Button lin = new Button("LINEAR");
         lin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -590,7 +651,7 @@ class CalculatorForm extends Form{
             }
         });
 
-        Button bell = new Button("bell");
+        Button bell = new Button("BELL");
         bell.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -620,8 +681,8 @@ class CalculatorForm extends Form{
             }
         });
 
-        Button Log = new Button("Log");
-        Log.addActionListener(new ActionListener() {
+        Button Param = new Button("PARAM");
+        Param.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
                     Double x = Double.parseDouble(command);
@@ -629,13 +690,13 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                 }
                 command = "";
-                normalal.log();
+                curveal.linearParams();
                 showXYST(normalal.getLastFourValues());
                 showTextbar(0);
             }
         });
 
-        Button Fix = new Button ("Fix");
+        Button Fix = new Button ("FIX");
         Fix.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -651,8 +712,8 @@ class CalculatorForm extends Form{
             }
         });
 
-        Button Ln = new Button("Ln");
-        Ln.addActionListener(new ActionListener() {
+        Button Stat = new Button("STAT");
+        Stat.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
                     Double x = Double.parseDouble(command);
@@ -660,18 +721,24 @@ class CalculatorForm extends Form{
                     normalal.push(x);
                 }
                 command = "";
-                normalal.ln();
+                curveal.rawStats();
                 showXYST(normalal.getLastFourValues());
-                showTextbar(0);
+                showTextbar(1);
             }
         });
 
-        Button E = new Button ("E");
-        E.addActionListener(new ActionListener() {
+        Button Flat = new Button ("FLAT");
+        Flat.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                command += 'E';
-                showX(command);
-                showTextbar(0);
+                if (!command.isEmpty() && command.charAt(0) != '*') {
+                    Double x = Double.parseDouble(command);
+                    normalal.pop();
+                    normalal.push(x);
+                }
+                command = "";
+                curveal.flatCurve();
+                showXYST(normalal.getLastFourValues());
+                showTextbar(1);
             }
         });
 
@@ -690,7 +757,7 @@ class CalculatorForm extends Form{
             }
         });
 
-        Button Roll = new Button("Roll");
+        Button Roll = new Button("ROLL");
         Roll.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (!command.isEmpty() && command.charAt(0) != '*') {
@@ -1032,8 +1099,8 @@ class CalculatorForm extends Form{
         sci1.add(root); sci1.add(square);
         sci2.add(lin); sci2.add(cube);
         sci3.add(bell); sci3.add(SQRT);
-        sci4.add(Log); sci4.add(Fix);
-        sci5.add(Ln); sci5.add(E);
+        sci4.add(Flat); sci4.add(Fix);
+        sci5.add(Param); sci5.add(Stat);
         sci6.add(X_Y); sci6.add(POP);
         sci7.add(Roll);sci7.add(clr);
 
@@ -1172,13 +1239,22 @@ class CalculatorForm extends Form{
             q = new TextComponent().label("Stack Size:" + normalal.getCursize());
         } else if (i == 1){
             DecimalFormat df = new DecimalFormat("#0.00");
-            q = new TextComponent().label("H:" + df.format(curveal.getStatData().get(0)) + " M:"+df.format(curveal.getStatData().get(1)) +
-                    " L:"+df.format(curveal.getStatData().get(2))+ " Med:"+df.format(curveal.getStatData().get(3))
-                    + " Mod:" + df.format(curveal.getStatData().get(4)));
+            q = new TextComponent().label(
+                    "H:" + df.format(curveal.getStatData().get(0))
+                    + " M:" + df.format(curveal.getStatData().get(1))
+                    + " L:" + df.format(curveal.getStatData().get(2))
+                    + " Med:" + df.format(curveal.getStatData().get(3))
+                    + " Mod:" + df.format(curveal.getStatData().get(4))
+            );
         } else {
             DecimalFormat df = new DecimalFormat("#0.00");
-            q = new TextComponent().label("M:" + df.format(curveal.getStatData().get(0)) + " Mode:"+df.format(curveal.getStatData().get(1)) +
-                    " Med:"+df.format(curveal.getStatData().get(2))+ " sd:"+df.format(curveal.getStatData().get(3)));
+            q = new TextComponent().label(
+                    " SD:" + df.format(curveal.getStatData().get(0))
+                    + " A:" + df.format(curveal.getStatData().get(1))
+                    + " B:" + df.format(curveal.getStatData().get(2))
+                    + " C:" + df.format(curveal.getStatData().get(3))
+                    + " D:" + df.format(curveal.getStatData().get(4))
+            );
         }
         textbar.removeAll();
         textbar.add(q);
@@ -1194,14 +1270,14 @@ class List extends Stack {
     public List() {
         list = new Vector<String>();
         curlistname = new String("No list loaded");
-        String alllist = Preferences.get("allList", null);
+        String allList = Preferences.get("allList", null);
         String listname = "";
 
-        if (!alllist.isEmpty()) {
-            alllist += "!";
-            for (int i = 0; i < alllist.length(); i++) {
-                if (alllist.charAt(i) != '!') {
-                    listname += alllist.charAt(i);
+        if (allList != null) {
+            allList += "!";
+            for (int i = 0; i < allList.length(); i++) {
+                if (allList.charAt(i) != '!') {
+                    listname += allList.charAt(i);
                 } else {
                     list.add(listname);
                     listname = "";
