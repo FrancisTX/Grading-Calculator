@@ -227,7 +227,7 @@ class NormalModeAlgorithm extends Stack {
 
 class Curve extends Stack {
     /*
-    * Offers three curving methods: root curve, bell curve, and linear curve. This presently doesn't work right if you
+    * Offers four curving methods: root curve, bell curve, flat and linear curve. This presently doesn't work right if you
     * want the average of only a single grade. Also computes 5 essential statistics: high, low, mean, median, and mode.
     * Also has helper functions to compute the difference of those 5 statistics.
     */
@@ -271,8 +271,6 @@ class Curve extends Stack {
     */
     public void bellCurve() {
         double mean = meanRaw();
-        double mode = modeRaw();
-        double median = medianRaw();
         double sd = 0;
         for (int i = stack.size() - 1; i >= Math.abs(stack.size() - getCursize()); i--) {
             double x = stack.get(i);
@@ -281,9 +279,6 @@ class Curve extends Stack {
         sd = Math.sqrt(sd/getCursize());
 
         statData.clear();
-//        statData.add(mean);
-//        statData.add(mode);
-//        statData.add(median);
         statData.add(sd);
         /*
          * The following present A, B, C, and D cut off scores respectively. F scores are implied as lower than D.
