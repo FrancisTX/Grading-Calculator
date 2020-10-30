@@ -42,11 +42,11 @@ Strictly speaking, our bell curve does not actually change any raw scores. Inste
 ## Statistics
 
 Cowculator computes and displays several statistics to help the professor in their decision making.
-* H: the delta computed of the highest score.
-* M: the delta computed of the mean score. Note this doesn't represent any one student, but rather the average.
-* L: the delta computed of the lowest score.
-* Med: the delta computed of the median score. Note this specifically represents one student, and may not represent the class average.
-* Mod: the delta computed of the mode score. This is the most frequently occuring score. Note Cowculator displays a "-1" should no mode exist.
+* `H`: the delta computed of the highest score.
+* `M`: the delta computed of the mean score. Note this doesn't represent any one student, but rather the average.
+* `L`: the delta computed of the lowest score.
+* `Med`: the delta computed of the median score. Note this specifically represents one student, and may not represent the class average.
+* `Mod`: the delta computed of the mode score. This is the most frequently occuring score. Note Cowculator displays a "-1" should no mode exist.
 
 ## UI and Keyboard
 
