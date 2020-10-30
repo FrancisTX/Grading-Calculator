@@ -69,7 +69,7 @@ List Storage: upper left coner button, user could choose any history list.
 
 ### Keyboard
 
-Basically, A 5*5 grid layout design. For containing more buttons, we also add 1*2 little grid layout on one unit of 5*5.
+Basically, A 5 * 5 grid layout design. For containing more buttons, we also add 1 * 2 little grid layout on one unit of 5 * 5.
 * Curving operation: `root` is root curving. `lin` is linear curving. `bell` is bell curving.
 * Arithmetic operation: <br/>
     logarithm: `+`, `-`, `*`, `\` , `.`, `Log` and `Ln`(natural logrithm)<br/>
