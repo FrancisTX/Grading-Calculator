@@ -57,9 +57,9 @@ including highest score, mean score, lowest score, media and mod socre. The keyb
 opertion is listed below. The List Storage is upper left coner button. All the history data users save will showing there. Users also could <br/>
 create new list there. <br/>
 
-Design layout: the whole page is a Border Layout with south and north part. The north subpart is the Box Layout contained screen and list/statistic<br/>
-info. The south part is a 5 * 5 grid layout design contained keyboard. For containing more buttons, we also add 1 * 2 little grid layout on one unit<br/>
-of 5 * 5.<br/>
+Design layout: the whole page is a Border Layout with south and north part. The north subpart is the Box Layout contained screen and <br/>
+list/statistic info. The south part is a 5 * 5 grid layout design contained keyboard. For containing more buttons, we also add 1 * 2 little <br/>
+grid layout on one unit of 5 * 5.<br/>
 
 ### Info exhibiting
 
