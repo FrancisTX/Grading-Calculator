@@ -67,19 +67,20 @@ List Storage: upper left coner button, user could choose any history list.
 ### Keyboard
 
 * Curving operation: `root` is root curving. `lin` is linear curving. `bell` is bell curving.
-* Arithmetic operation: 
+* Arithmetic operation: <br/>
     logarithm: `+`, `-`, `*`, `\` , `.`, `Log` and `Ln`(natural logrithm)<br/>
     square: `x^2`<br/>
     cube:`x^3`<br/>
     square root: `SQRT`<br/>
     Euler's number: `E`<br/>
     Y^X: `Y^X` (enter a number `Y` first, click the `ENT`, and then enter the `X`)<br/>
-* Enter, view and edit the history:
+* Enter, view and edit the history:<br/>
     `ENT` : enter the number<br/>
     `Roll` : view the history<br/>
     `POP` : pop the last one number entered<br/>
     `<-` : remove one digit when entering, remove whole number when viewing<br/>
     `X<->Y` : exchange the `X` and `Y`<br/>
     `Fix` : decimal places (one, two or three)<br/>
+    `CLR` : remove all the data and reset the screen
 
 
