@@ -1275,14 +1275,14 @@ class List extends Stack {
     public List() {
         list = new Vector<String>();
         curlistname = new String("No list loaded");
-        String alllist = Preferences.get("allList", null);
+        String allList = Preferences.get("allList", null);
         String listname = "";
 
-        if (!alllist.isEmpty()) {
-            alllist += "!";
-            for (int i = 0; i < alllist.length(); i++) {
-                if (alllist.charAt(i) != '!') {
-                    listname += alllist.charAt(i);
+        if (!allList.isEmpty()) {
+            allList += "!";
+            for (int i = 0; i < allList.length(); i++) {
+                if (allList.charAt(i) != '!') {
+                    listname += allList.charAt(i);
                 } else {
                     list.add(listname);
                     listname = "";
